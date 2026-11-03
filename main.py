@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 from ai_service import Gemini
 from admin_periods import LOCAL_TZ, period_bounds
 from report_generator import build_usage_report
+from internal_auth import resolve_internal_token
 from bot_state import (
     AI_BUTTON,
     BACK_TO_AI_BUTTON,
@@ -42,11 +43,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+load_dotenv(os.path.join(os.path.dirname(__file__), "config.env"))
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 TOKEN = os.getenv("BOT_TOKEN")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8004").rstrip("/")
 BACKEND_WS_URL = os.getenv("BACKEND_WS_URL", "ws://127.0.0.1:8004").rstrip("/")
-INTERNAL_API_TOKEN = os.getenv("INTERNAL_API_TOKEN")
+configured_internal_token = os.getenv("INTERNAL_API_TOKEN", "").strip()
+jwt_secret_fallback = os.getenv("JWT_SECRET", "").strip()
+INTERNAL_API_TOKEN, INTERNAL_AUTH_SCHEME = resolve_internal_token(
+    configured_internal_token,
+    jwt_secret_fallback,
+)
 try:
     ADMIN_TELEGRAM_ID = int(os.getenv("ADMIN_TELEGRAM_ID", ""))
     if ADMIN_TELEGRAM_ID <= 0:
@@ -56,6 +63,11 @@ except ValueError:
     logger.error("ADMIN_CONFIG_ERROR | ADMIN_TELEGRAM_ID is missing or invalid")
 if not INTERNAL_API_TOKEN:
     logger.error("INTERNAL_API_CONFIG_ERROR | INTERNAL_API_TOKEN is missing")
+else:
+    logger.info(
+        "INTERNAL_AUTH_CONFIG | scheme=%s | secret_present=true",
+        INTERNAL_AUTH_SCHEME,
+    )
 
 dp = Dispatcher()
 bot = Bot(token=TOKEN)

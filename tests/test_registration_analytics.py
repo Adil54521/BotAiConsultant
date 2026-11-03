@@ -8,6 +8,7 @@ from openpyxl import load_workbook
 from admin_periods import LOCAL_TZ, period_bounds
 from bot_state import UserMode, is_admin_id, is_own_contact, route_text
 from report_generator import build_usage_report
+from internal_auth import resolve_internal_token
 
 
 class RegistrationAndAdminTests(unittest.TestCase):
@@ -24,6 +25,18 @@ class RegistrationAndAdminTests(unittest.TestCase):
 
     def test_own_telegram_contact_is_accepted(self):
         self.assertTrue(is_own_contact(100, 100))
+
+    def test_bot_and_backend_derive_stable_internal_auth_token(self):
+        token, scheme = resolve_internal_token("", "existing-jwt-secret")
+        second, _ = resolve_internal_token(None, "existing-jwt-secret")
+        self.assertEqual(scheme, "derived_from_jwt_secret")
+        self.assertEqual(token, second)
+        self.assertNotEqual(token, "existing-jwt-secret")
+
+    def test_explicit_internal_token_has_priority(self):
+        token, scheme = resolve_internal_token(" explicit-token ", "fallback")
+        self.assertEqual(token, "explicit-token")
+        self.assertEqual(scheme, "configured_internal_token")
 
     def test_admin_authorization_uses_numeric_telegram_id(self):
         self.assertTrue(is_admin_id(100, 100))

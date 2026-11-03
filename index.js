@@ -10,6 +10,7 @@ const Busboy = require("busboy");
 const fs = require("fs");
 const WebSocket = require("ws");
 const path = require("path");
+const {resolveInternalToken, isInternalAuthorized: verifyInternalRequest} = require("./internal_auth");
 const { PDFParse } = require("pdf-parse");
 const { createEmbedding } = require("./gemini");
 const {
@@ -25,10 +26,12 @@ const {
     getSupportRows
 } = require("./analytics");
 
-const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
+const internalAuth = resolveInternalToken(process.env.INTERNAL_API_TOKEN, process.env.JWT_SECRET);
+const INTERNAL_API_TOKEN = internalAuth.token;
+console.log(`INTERNAL_AUTH_CONFIG scheme=${internalAuth.scheme} secret_present=${Boolean(INTERNAL_API_TOKEN)}`);
 
 function isInternalAuthorized(req) {
-    return Boolean(INTERNAL_API_TOKEN) && req.headers["x-internal-token"] === INTERNAL_API_TOKEN;
+    return verifyInternalRequest(req, INTERNAL_API_TOKEN);
 }
 
 function readJsonBody(req, maxBytes = 1_000_000) {
