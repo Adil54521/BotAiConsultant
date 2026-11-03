@@ -10,7 +10,7 @@ require.cache[dbPath] = {
     exports: {
         query: async (sql, params) => {
             calls.push({sql, params});
-            if (sql.includes("INSERT INTO chats")) {
+            if (sql.includes("INSERT INTO public.chats")) {
                 return {rowCount: 1, rows: [{id: 7, telegram_id: params[0], phone: params[2], phone_verified: true}]};
             }
             return {rowCount: 0, rows: []};
@@ -33,7 +33,7 @@ test("registration upserts the existing chats row by Telegram ID", async () => {
         fullName: "Test User",
     });
     assert.equal(user.telegram_id, "123456");
-    assert.match(calls[0].sql, /INSERT INTO chats/);
+    assert.match(calls[0].sql, /INSERT INTO public\.chats/);
     assert.match(calls[0].sql, /ON CONFLICT \(student_id\) DO UPDATE/);
     assert.doesNotMatch(calls[0].sql, /ai_conversations|ai_usage_events/);
 });
@@ -42,6 +42,15 @@ test("registration rejects an invalid Telegram ID before querying the database",
     calls.length = 0;
     await assert.rejects(
         registerBotUser({telegramId: "bad", phone: "+77011234567"}),
+        /INVALID_TELEGRAM_ID/
+    );
+    assert.equal(calls.length, 0);
+});
+
+test("registration rejects values outside PostgreSQL bigint range", async () => {
+    calls.length = 0;
+    await assert.rejects(
+        registerBotUser({telegramId: "9223372036854775808", phone: "+77011234567"}),
         /INVALID_TELEGRAM_ID/
     );
     assert.equal(calls.length, 0);

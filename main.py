@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import tempfile
+import uuid
 from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 
@@ -166,7 +167,10 @@ async def backend_post(path, payload):
     if backend_session is None:
         return False, ""
     try:
-        headers = {"x-internal-token": INTERNAL_API_TOKEN} if INTERNAL_API_TOKEN else {}
+        request_id = uuid.uuid4().hex
+        headers = {"x-request-id": request_id}
+        if INTERNAL_API_TOKEN:
+            headers["x-internal-token"] = INTERNAL_API_TOKEN
         async with backend_session.post(
             f"{BACKEND_URL}{backend_api_prefix}{path}", json=payload, headers=headers,
             timeout=aiohttp.ClientTimeout(total=30 if path.startswith("/internal/admin/") else 12)
@@ -175,7 +179,8 @@ async def backend_post(path, payload):
             if response.status >= 400:
                 error_hint = " ".join(text[:160].splitlines())
                 logger.error(
-                    "BACKEND_ERROR | path=%s | status=%d | body_hint=%r",
+                    "BACKEND_ERROR | request_id=%s | path=%s | status=%d | body_hint=%r",
+                    request_id,
                     path,
                     response.status,
                     error_hint,
@@ -183,7 +188,12 @@ async def backend_post(path, payload):
                 return False, ""
             return True, text
     except (aiohttp.ClientError, asyncio.TimeoutError) as error:
-        logger.error("BACKEND_ERROR | path=%s | type=%s", path, type(error).__name__)
+        logger.error(
+            "BACKEND_ERROR | request_id=%s | path=%s | type=%s",
+            request_id,
+            path,
+            type(error).__name__,
+        )
         return False, ""
 
 

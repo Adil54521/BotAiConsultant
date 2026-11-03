@@ -4,13 +4,16 @@ require("dotenv").config({
 });
 
 const route = require('http');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 8004;
 const Busboy = require("busboy");
 const fs = require("fs");
 const WebSocket = require("ws");
 const path = require("path");
+const pool = require("./db");
 const {resolveInternalToken, isInternalAuthorized: verifyInternalRequest} = require("./internal_auth");
+const {logSafeError} = require("./backend_diagnostics");
 const { PDFParse } = require("pdf-parse");
 const { createEmbedding } = require("./gemini");
 const {
@@ -32,6 +35,39 @@ console.log(`INTERNAL_AUTH_CONFIG scheme=${internalAuth.scheme} secret_present=$
 
 function isInternalAuthorized(req) {
     return verifyInternalRequest(req, INTERNAL_API_TOKEN);
+}
+
+function requestIdFor(req) {
+    const supplied = String(req.headers["x-request-id"] || "");
+    return /^[A-Za-z0-9_-]{8,64}$/.test(supplied) ? supplied : crypto.randomUUID();
+}
+
+async function logDatabaseIdentity() {
+    try {
+        const identity = await pool.query(`
+            SELECT current_database() AS database,
+                   current_schema() AS schema,
+                   current_user AS db_user,
+                   COALESCE(inet_server_addr()::text, 'local') AS server_address,
+                   inet_server_port() AS server_port,
+                   current_setting('search_path') AS search_path,
+                   current_setting('server_version') AS server_version
+        `);
+        const sequence = await pool.query(`
+            SELECT to_regclass('public.chats_id_seq')::text AS sequence_name,
+                   COALESCE((SELECT max(id) FROM public.chats), 0) AS max_chat_id,
+                   CASE WHEN to_regclass('public.chats_id_seq') IS NOT NULL
+                        THEN (SELECT last_value FROM public.chats_id_seq)
+                   END AS sequence_last_value,
+                   CASE WHEN to_regclass('public.chats_id_seq') IS NOT NULL
+                        THEN (SELECT is_called FROM public.chats_id_seq)
+                   END AS sequence_is_called
+        `);
+        console.log("DATABASE_IDENTITY", JSON.stringify(identity.rows[0]));
+        console.log("DATABASE_SEQUENCE_STATE", JSON.stringify(sequence.rows[0]));
+    } catch (error) {
+        logSafeError("database_identity", error, "startup", "database_diagnostics");
+    }
 }
 
 function readJsonBody(req, maxBytes = 1_000_000) {
@@ -113,8 +149,9 @@ const {
 
 const MAX_SIZE = 100 * 1024 * 1024;
 const server = route.createServer(async (req, res) => {
-    console.log(req.method, req.url);
+    const requestId = requestIdFor(req);
     const requestUrl = new URL(req.url, "http://127.0.0.1");
+    console.log(`HTTP_REQUEST method=${req.method} path=${requestUrl.pathname} request_id=${requestId}`);
     const normalizedPath = requestUrl.pathname.replace(/\/+$/, "") || "/";
     const internalPath = normalizedPath.startsWith("/api/internal/")
         ? normalizedPath.slice(4)
@@ -122,8 +159,12 @@ const server = route.createServer(async (req, res) => {
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Access-Control-Allow-Origin', 'https://undercook-habitable-disposal.ngrok-free.dev');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, X-Internal-Token, X-Request-ID'
+    );
     res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.setHeader("X-Request-ID", requestId);
     res.setHeader(
         "Access-Control-Allow-Credentials",
         "true"
@@ -163,12 +204,15 @@ const server = route.createServer(async (req, res) => {
     }
 
     if (req.method === "POST" && internalPath === "/internal/bot-user/register") {
+        let stage = "read_json";
         try {
-            const user = await registerBotUser(await readJsonBody(req));
+            const data = await readJsonBody(req);
+            stage = "register_bot_user";
+            const user = await registerBotUser(data);
             res.end(JSON.stringify({success: true, user}));
         } catch (error) {
             const invalid = ["INVALID_PHONE", "INVALID_TELEGRAM_ID"].includes(error.message);
-            console.error(`BOT_USER_REGISTER_ERROR type=${error.constructor.name}`);
+            logSafeError("bot_user_register", error, requestId, stage);
             res.writeHead(invalid ? 400 : 500);
             res.end(JSON.stringify({success: false, error: invalid ? "Invalid registration data" : "Server error"}));
         }
@@ -1310,6 +1354,7 @@ wss.on("connection", (ws) => {
     });
 });
 
-server.listen(port, () => {
+server.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
+    await logDatabaseIdentity();
 });

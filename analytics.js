@@ -10,20 +10,28 @@ async function getBotUser(telegramId) {
         `SELECT id, student_id AS telegram_id, student_name AS full_name, username,
                 first_name, last_name, phone, phone_verified,
                 created_at AS registered_at, last_activity_at
-         FROM chats WHERE student_id=$1 LIMIT 1`, [telegramId]
+         FROM public.chats WHERE student_id=$1 LIMIT 1`, [telegramId]
     );
     return result.rows[0] || null;
 }
 
 async function registerBotUser(data) {
     const telegramId = String(data.telegramId || "");
-    if (!/^\d{1,20}$/.test(telegramId) || telegramId === "0") {
+    let telegramIdNumber;
+    try {
+        telegramIdNumber = BigInt(telegramId);
+    } catch {
+        throw new Error("INVALID_TELEGRAM_ID");
+    }
+    if (!/^\d{1,19}$/.test(telegramId)
+        || telegramIdNumber <= 0n
+        || telegramIdNumber > 9223372036854775807n) {
         throw new Error("INVALID_TELEGRAM_ID");
     }
     const phone = normalizePhone(data.phone);
     if (!phone) throw new Error("INVALID_PHONE");
     const result = await pool.query(
-        `INSERT INTO chats
+        `INSERT INTO public.chats
             (student_id, student_name, phone, consultant_mode, username,
              first_name, last_name, phone_verified, last_activity_at)
          VALUES ($1,$2,$3,false,$4,$5,$6,true,now())

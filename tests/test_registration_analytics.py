@@ -61,7 +61,7 @@ class RegistrationAndAdminTests(unittest.TestCase):
     def test_backend_uses_live_chat_and_message_schema(self):
         analytics = Path("analytics.js").read_text(encoding="utf-8")
         chat = Path("chat.js").read_text(encoding="utf-8")
-        self.assertIn("INSERT INTO chats", analytics)
+        self.assertIn("INSERT INTO public.chats", analytics)
         self.assertIn("INSERT INTO messages", analytics)
         self.assertNotIn("FROM ai_usage_events", analytics)
         self.assertNotIn("FROM support_requests", analytics)
