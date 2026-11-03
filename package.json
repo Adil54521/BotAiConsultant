@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@google/genai": "^2.10.0",
+    "base-64": "^1.0.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "fund": "^1.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "pdf-parse": "^2.4.5",
+    "pg": "^8.22.0",
+    "ws": "^8.21.0"
+  }
+}

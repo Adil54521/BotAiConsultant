@@ -1,0 +1,111 @@
+	## HTTP -> HTTPS
+	#server {
+	#	listen 80;
+	#	server_name mobility.kuam.kz;
+	#
+	#	location / {
+	#		return 301 https://$host$request_uri;
+	#	}
+	#}
+
+	# HTTPS
+	#server {
+	#	listen 443 ssl;
+	#	server_name mobility.kuam.kz;
+	#
+	#	ssl_certificate     C:/nginx-1.28.0/nginx-1.28.0/ssl4/mobility.kuam.kz-chain.pem;
+	#	ssl_certificate_key C:/nginx-1.28.0/nginx-1.28.0/ssl4/mobility.kuam.kz-key.pem;
+	#
+	#	ssl_session_cache shared:SSL:1m;
+	#	ssl_session_timeout 5m;
+	#
+	#	ssl_protocols TLSv1.2 TLSv1.3;
+	#	ssl_ciphers HIGH:!aNULL:!MD5;
+	#	ssl_prefer_server_ciphers on;
+	#
+	#	# Фронтенд
+	#	location / {
+	#		root "C:/BotAiConsultant/";
+	#		index aithorization_form.html;
+	#		try_files $uri $uri/ $uri.html =404;
+	#	}
+	#
+	#	# API Node.js
+	#	location /api/ {
+	#		proxy_pass http://127.0.0.1:8004/;
+	#		proxy_http_version 1.1;
+	#
+	#		proxy_set_header Upgrade $http_upgrade;
+	#		proxy_set_header Connection "upgrade";
+	#		proxy_set_header Host $host;
+	#		proxy_set_header X-Real-IP $remote_addr;
+	#		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	#		proxy_set_header X-Forwarded-Proto $scheme;
+	#
+	#		proxy_cache_bypass $http_upgrade;
+	#	}
+	#
+	#	# WebSocket
+	#	location /ws {
+	#		proxy_pass http://127.0.0.1:8004;
+	#		proxy_http_version 1.1;
+	#
+	#		proxy_set_header Upgrade $http_upgrade;
+	#		proxy_set_header Connection "upgrade";
+	#		proxy_set_header Host $host;
+	#		proxy_set_header X-Real-IP $remote_addr;
+	#		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	#		proxy_set_header X-Forwarded-Proto $scheme;
+	#	}
+	#}
+
+	#server {
+    #    listen 80;
+    #    server_name kupikoksh.kz;
+	#
+    #    location / {
+    #        return 301 https://$host$request_uri;
+    #    }
+    #}
+	#
+	#server {
+	#	listen 443 ssl;
+	#	server_name kupikoksh.kz www.kupikoksh.kz;
+	#
+	#	ssl_certificate     C:/nginx-1.28.0/nginx-1.28.0/ssl3/kupikoksh.kz-crt.pem;
+	#	ssl_certificate_key C:/nginx-1.28.0/nginx-1.28.0/ssl3/kupikoksh.kz-key.pem;
+	#
+	#	location /static/ {
+	#		alias C:/kupikoksh/kupikoksh/staticfiles/;
+	#		expires 30d;
+	#		add_header Cache-Control "public, max-age=2592000, immutable";
+	#		access_log off;
+	#	}
+	#
+	#	location /media/ {
+	#		alias C:/kupikoksh/kupikoksh/media/;
+	#		expires 7d;
+	#		add_header Cache-Control "public, max-age=604800";
+	#		access_log off;
+	#	}
+	#
+	#	location /admin/ {
+	#		limit_req zone=admin_limit burst=10 nodelay;
+	#
+	#		proxy_pass http://127.0.0.1:8003;
+	#		proxy_set_header Host $host;
+	#		proxy_set_header X-Real-IP $remote_addr;
+	#		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	#		proxy_set_header X-Forwarded-Proto $scheme;
+	#	}
+	#
+	#	location / {
+	#		limit_req zone=django_limit burst=40 nodelay;
+	#
+	#		proxy_pass http://127.0.0.1:8003;
+	#		proxy_set_header Host $host;
+	#		proxy_set_header X-Real-IP $remote_addr;
+	#		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	#		proxy_set_header X-Forwarded-Proto $scheme;
+	#	}
+	#}

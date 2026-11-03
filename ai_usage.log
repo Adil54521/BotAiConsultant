@@ -1,0 +1,422 @@
+2026-05-28 17:02:52,818 | CACHE_CREATED | name=cachedContents/p3acg78ijgisc9ck5scz017g5h2ly4yj9uww2ka0
+2026-05-28 17:24:07,451 | CACHE_CREATED | name=cachedContents/jko9emlh9x5tjze1dh688tyf9au461jwrtsve11p
+2026-05-28 17:24:37,090 | CACHE_CREATED | name=cachedContents/a4xfa7z3obsbyzgx36ypta0gtnq8mhg0gnvuxh3d
+2026-05-29 09:08:25,436 | CACHE_CREATED | name=cachedContents/kghphog6p12q0x1gkggiu1w9j35nq57qo05pr200
+2026-05-29 09:10:51,149 | CACHE_CREATED | name=cachedContents/b70q2263zziwznuz56dgi2jrfckeud29znk2zomd
+2026-05-29 09:14:16,339 | CACHE_CREATED | name=cachedContents/fhb06sbqkr46nd4ixocv2cvzimqipefjzf2sgut2
+2026-05-29 09:16:45,707 | CACHE_CREATED | name=cachedContents/z1ohmme596niwg8xtp3sx9xbb2d71otlbflm0nyv
+2026-05-29 09:36:29,701 | CACHE_CREATED | name=cachedContents/7cumccikn39mq0rrnlwzw807og3v1a6c1gsecono
+2026-05-29 09:37:33,384 | CACHE_CREATED | name=cachedContents/nhiij8rjct9qkdwyzl7fbrw82nxzxa0fbb1qpek4
+2026-05-29 09:38:04,099 | CACHE_CREATED | name=cachedContents/ezv7qxe6oq1xl7ioowdgpllv3rqpfxtcz4y12qgs
+2026-05-29 10:46:29,695 | CACHE_CREATED | name=cachedContents/fp15h1zsv8veijz74um38zr8ue3aoermh5fwdl85
+2026-05-29 10:47:16,645 | CACHE_CREATED | name=cachedContents/es78nqt9vc2wnxr0nr41mpwk43bo9343wew2brbf
+2026-05-29 10:47:52,164 | CACHE_CREATED | name=cachedContents/hl3qhxdb05eqr4fgjn4ovjiffmflzufnnxzw5nfe
+2026-05-29 10:49:08,963 | CACHE_CREATED | name=cachedContents/v0lr5fu802m3yqadlrdwuua39fdp60z7zkctg2eg
+2026-05-29 10:50:50,092 | CACHE_CREATED | name=cachedContents/vjgy47kiaj86r4wshfl30u1bbd6qcoyt39yzno4m
+2026-05-29 11:06:28,401 | CACHE_CREATED | name=cachedContents/h8nqsiitf0ckwvsjaij3ha7cavu8ko4za8bledpd
+2026-05-29 11:11:12,589 | CACHE_CREATED | name=cachedContents/19llfz5d1csfdtw263ew7qy6b50n1i1tg7j7e0p6
+2026-05-29 11:12:29,285 | CACHE_CREATED | name=cachedContents/hjmewkttbkc9npl7h2sgzn0xp80jrh6xya05lsn0
+2026-05-29 11:13:33,575 | CACHE_CREATED | name=cachedContents/mye523qa3sfwi6e3jowoqlo4o14lgv7rezvhwv0m
+2026-05-29 11:14:43,890 | CACHE_CREATED | name=cachedContents/uibk3gnjsvryk7ueli6aewfybnt2ixrbjk6lv6eu
+2026-05-29 11:15:34,257 | AI_REQUEST | {} | text=ИИ режим
+2026-05-29 11:15:35,787 | AI_USAGE | {} | {'promptTokenCount': 4004, 'candidatesTokenCount': 65, 'totalTokenCount': 4069, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4004}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 11:15:35,788 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Моя задача — помочь вам с вопросами, связанными с поступлением и участием в программах академической мобильности.
+
+Пожалуйста, задайте ваш вопрос по теме поступления, и я постараюсь предоставить вам всю необходимую информацию из имеющихся данных.
+2026-05-29 11:56:40,259 | CACHE_CREATED | name=cachedContents/uiyjtkt381cyuux2v6c6kg4005oqll0eidd47p7y
+2026-05-29 11:59:29,333 | CACHE_CREATED | name=cachedContents/ndlw6ug6jfszicr080xwbg7rawvexx3bef8d5no8
+2026-05-29 12:03:50,216 | CACHE_CREATED | name=cachedContents/x81wctba1y6pjhjepgfd3dbs9eamhovimt3kcur1
+2026-05-29 12:07:04,134 | CACHE_CREATED | name=cachedContents/mmwstshvgidsztxn2ax6hpai6qkx5cmr11m98yuj
+2026-05-29 12:08:23,395 | AI_REQUEST | {} | text=ИИ режим
+2026-05-29 12:08:26,115 | AI_USAGE | {} | {'promptTokenCount': 4004, 'candidatesTokenCount': 38, 'totalTokenCount': 4042, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4004}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 12:08:26,115 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Готов ответить на ваши вопросы, связанные с поступлением по программам академической мобильности.
+
+Пожалуйста, задавайте ваш вопрос.
+2026-05-29 14:42:58,580 | CACHE_CREATED | name=cachedContents/ajzlugswcfcjc52f4o2vdc0jgccw23jj3507dy4w
+2026-05-29 14:43:10,415 | AI_REQUEST | {} | text=ИИ режим
+2026-05-29 14:43:12,473 | AI_USAGE | {} | {'promptTokenCount': 4004, 'candidatesTokenCount': 116, 'totalTokenCount': 4120, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4004}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 14:43:12,474 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я могу помочь вам с вопросами, касающимися поступления по программам академической мобильности.
+
+Пожалуйста, уточните, что именно вы имеете в виду под "ИИ режим". Если вы имеете в виду поступление по программам искусственного интеллекта, то я могу предоставить информацию о критериях отбора, необходимых документах и процедурах.
+
+Если же ваш вопрос связан с использованием искусственного интеллекта в процессе поступления или обучения, пожалуйста, ут
+2026-05-29 15:05:12,208 | CACHE_CREATED | name=cachedContents/hf0t3gw6ao1mlsmuwfz32189e9cqtpalho5xwod2
+2026-05-29 15:05:26,619 | AI_REQUEST | {} | text=ИИ режим
+2026-05-29 15:05:28,190 | AI_USAGE | {} | {'promptTokenCount': 4004, 'candidatesTokenCount': 36, 'totalTokenCount': 4040, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4004}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 15:05:28,191 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, касающиеся поступления по программе академической мобильности. Пожалуйста, задавайте ваш вопрос.
+2026-05-29 15:06:16,677 | AI_REQUEST | {} | text=ИИ режим
+2026-05-29 15:06:17,931 | AI_ERROR | {} | 503 Server Error: Service Unavailable for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=AIzaSyCYcFef8VhOpaSK2FQpW0Pma79iJgIRW_M
+2026-05-29 15:20:27,314 | CACHE_CREATED | name=cachedContents/ikyuyvod5baqlm0sqi2tj3poj1g15ksluf8a4pl1
+2026-05-29 15:45:28,190 | CACHE_CREATED | name=cachedContents/it6ctihle8gvcmdkwr4hwzruvmidnpx6ure2ksi9
+2026-05-29 15:45:46,669 | AI_REQUEST | {} | text=привет
+2026-05-29 15:45:48,035 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 15, 'totalTokenCount': 4017, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 15:45:48,035 | AI_RESPONSE | {} | text=Привет! Я готов ответить на ваши вопросы по теме академической мобильности.
+2026-05-29 15:47:15,820 | CACHE_CREATED | name=cachedContents/moemmpvqpq6862ua6h14gyrh6jinqr0x31ffm27y
+2026-05-29 15:47:28,255 | AI_REQUEST | {} | text=Привет
+2026-05-29 15:47:29,898 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 12, 'totalTokenCount': 4015, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 15:47:29,898 | AI_RESPONSE | {} | text=Здравствуйте! Чем могу помочь по теме академической мобильности?
+2026-05-29 15:48:06,522 | CACHE_CREATED | name=cachedContents/flxtgldx78r5mbq8ht1eue1wu4g0latsq2a3rbdl
+2026-05-29 15:48:14,073 | AI_REQUEST | {} | text=Привет
+2026-05-29 15:48:15,472 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 15, 'totalTokenCount': 4018, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-05-29 15:48:15,472 | AI_RESPONSE | {} | text=Привет! Я готов ответить на ваши вопросы по теме академической мобильности.
+2026-05-29 16:27:07,273 | CACHE_CREATED | name=cachedContents/h6ow9sxlrzd4uobfc6i6clb3foeb714dvmdkwq3m
+2026-05-29 16:27:54,224 | CACHE_CREATED | name=cachedContents/87b32xjgaxcxm82dvcgd88hcp9eikb2v7ixyr0pp
+2026-05-29 16:34:42,219 | CACHE_CREATED | name=cachedContents/3yr5p90a0so8n8b80foe5mg3kv1fs28xhauzy3ld
+2026-06-01 09:31:54,863 | CACHE_CREATED | name=cachedContents/zxk2buqlyk58x0iquw7gz2hqzqmjq5t3mxl3pca4
+2026-06-01 09:38:37,223 | CACHE_CREATED | name=cachedContents/4on7zst3zghgkxqa19ux5yntnpafstgr5vzd7o9n
+2026-06-01 09:40:58,796 | CACHE_CREATED | name=cachedContents/pf8l3tbuykjp6hr0n9adiil58z3vm0iawlf0pbhi
+2026-06-01 09:41:54,515 | CACHE_CREATED | name=cachedContents/s2jjwe90rgrhybv4kyliwrieivn09053ukuu2284
+2026-06-01 09:50:17,504 | CACHE_CREATED | name=cachedContents/qpnfauujx1v7jpaq4bw8ya7tl3fdqvvr8ew3qdau
+2026-06-01 09:50:55,434 | CACHE_CREATED | name=cachedContents/vbbjek7hou65vt2ut21wip0g9fqf5htc71n520hc
+2026-06-01 09:51:06,933 | AI_REQUEST | {} | text=ИИ режим
+2026-06-01 09:51:08,266 | AI_USAGE | {} | {'promptTokenCount': 4004, 'candidatesTokenCount': 38, 'totalTokenCount': 4042, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4004}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 09:51:08,266 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Готов ответить на ваши вопросы, связанные с поступлением по программам академической мобильности.
+
+Пожалуйста, задавайте ваш вопрос.
+2026-06-01 10:56:27,910 | CACHE_CREATED | name=cachedContents/839kzkpevs37y6falkwtjuszjaf8ug1gzppswv2t
+2026-06-01 10:57:32,426 | CACHE_CREATED | name=cachedContents/bhamledtisefkdytzmn2skqnoh61l367utntqidb
+2026-06-01 10:57:54,769 | CACHE_CREATED | name=cachedContents/l30lfq1op1o691ltjp7y44dlc0ziwq8v3irpc25v
+2026-06-01 10:59:03,699 | CACHE_CREATED | name=cachedContents/u4d5apz08ot0r2dqur9zuxf4ot5limaygmvraqvp
+2026-06-01 10:59:20,909 | CACHE_CREATED | name=cachedContents/cfa2zago3hs7cqq1ph0tms6ln7ib3d2vnpwtabmq
+2026-06-01 11:02:16,007 | CACHE_CREATED | name=cachedContents/ls73vehqlf14dv10j9epn6ji5ylhfpq12fb7rabj
+2026-06-01 11:10:50,719 | CACHE_CREATED | name=cachedContents/x0dr81y7noaddx7mrhq8es91l7x5zj0e7ihfci8k
+2026-06-01 12:21:46,793 | CACHE_CREATED | name=cachedContents/qmr9gpwafpjaakl7xo5ptgqux1tmxlg4qt8chgqc
+2026-06-01 14:14:50,532 | CACHE_CREATED | name=cachedContents/8vut4e9g8ozthvc56596qino8une6y28xdfkih0y
+2026-06-01 14:31:03,871 | CACHE_CREATED | name=cachedContents/ft7fbywt1uis2deet8trx73cjnzj40kyqc9r1byi
+2026-06-01 14:35:57,033 | CACHE_CREATED | name=cachedContents/len316ml9el1a9ru840tried21b7bx3o4d0gwe4i
+2026-06-01 14:45:29,604 | CACHE_CREATED | name=cachedContents/soa9y7ow7a7gdwrz3yw51a83g69rak83hnq7dvik
+2026-06-01 14:50:37,882 | CACHE_CREATED | name=cachedContents/y2pq2vvlhtu8ddm4pmltkn5ehcmdxc10fguzk0m0
+2026-06-01 14:51:41,879 | CACHE_CREATED | name=cachedContents/hge7yiq4v9sxk2pkuya108jvp2se3b3wptii261t
+2026-06-01 14:52:58,390 | CACHE_CREATED | name=cachedContents/6ed70h3y00pp2u0zki7evezn7eeww708idkbbggg
+2026-06-01 14:57:20,995 | CACHE_CREATED | name=cachedContents/f8y5d4hrg8zv8tmodok5a7qyn5rupvplgzpqbjx6
+2026-06-01 15:09:46,092 | CACHE_CREATED | name=cachedContents/83aq2opqgd4avn4sp5wn7ve7whhg9op2gof78jfw
+2026-06-01 15:10:58,801 | CACHE_CREATED | name=cachedContents/sqbxup6karw3hpuiznem197s38zj7wpboegu4z5n
+2026-06-01 15:11:37,400 | CACHE_CREATED | name=cachedContents/rolqixe83r7p3e3bg5ruouiqf6rzff6un8y2txp5
+2026-06-01 15:11:43,923 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 15:11:45,404 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 40, 'totalTokenCount': 4045, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 15:11:45,404 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, связанные с поступлением и участием в программах академической мобильности. Пожалуйста, задавайте ваш вопрос.
+2026-06-01 15:30:55,471 | CACHE_CREATED | name=cachedContents/f565i7a72z92dss864nzj05wkp84kq7jwq6imou2
+2026-06-01 15:31:08,345 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 15:31:09,870 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 36, 'totalTokenCount': 4041, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 15:31:09,870 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, связанные с поступлением на программы академической мобильности. Пожалуйста, задавайте ваш вопрос.
+2026-06-01 15:32:18,030 | CACHE_CREATED | name=cachedContents/wqz5yxcsfok8nkxgckzaoauhx72l6cm7lfhxwtnb
+2026-06-01 15:32:23,471 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 15:32:25,391 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 39, 'totalTokenCount': 4044, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 15:32:25,391 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я могу ответить на вопросы, связанные с поступлением на программы академической мобильности. Пожалуйста, задайте ваш вопрос по теме поступления.
+2026-06-01 15:34:35,630 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 15:34:37,869 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 37, 'totalTokenCount': 4042, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 15:34:37,869 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, касающиеся поступления по программам академической мобильности. Пожалуйста, задавайте ваш вопрос.
+2026-06-01 15:51:26,713 | CACHE_CREATED | name=cachedContents/mvimvg3apvtpt87ok8dh5ekrkqxvhw3qx6exp794
+2026-06-01 16:00:23,914 | CACHE_CREATED | name=cachedContents/dw9d7unuy1v1v8dx40r2x48gj8v29el5vq3cfjby
+2026-06-01 16:00:30,080 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:00:31,717 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 40, 'totalTokenCount': 4045, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:00:31,718 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, связанные с поступлением и участием в программах академической мобильности. Пожалуйста, задавайте ваш вопрос.
+2026-06-01 16:00:31,925 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:00:33,359 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 49, 'totalTokenCount': 4054, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:00:33,360 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Моя задача — помогать вам с вопросами, связанными с академической мобильностью.
+
+Пожалуйста, задайте ваш вопрос по теме поступления в рамках академической мобильности.
+2026-06-01 16:00:33,529 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:00:34,934 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 39, 'totalTokenCount': 4044, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:00:34,934 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я могу ответить на вопросы, связанные с поступлением на программы академической мобильности. Пожалуйста, задайте ваш вопрос по теме поступления.
+2026-06-01 16:00:35,095 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:00:36,357 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 46, 'totalTokenCount': 4051, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:00:36,357 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я могу помочь вам с вопросами, касающимися поступления и участия в программах академической мобильности.
+
+Пожалуйста, задайте ваш вопрос по теме поступления.
+2026-06-01 16:00:36,522 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:00:37,790 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 44, 'totalTokenCount': 4049, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:00:37,790 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я могу помочь вам с вопросами, касающимися поступления по программам академической мобильности.
+
+Пожалуйста, задайте ваш вопрос по теме поступления.
+2026-06-01 16:13:48,284 | CACHE_CREATED | name=cachedContents/08icmtrf62x4zl8kn9i6npidp029y35bzsl4pur9
+2026-06-01 16:13:59,995 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:14:01,351 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 39, 'totalTokenCount': 4044, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:14:01,351 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, касающиеся поступления и участия в программах академической мобильности. Пожалуйста, задавайте ваш вопрос.
+2026-06-01 16:24:54,179 | CACHE_CREATED | name=cachedContents/6rbolxhqv5z87ixgtqicr82i68jjcu2s3vpfidlb
+2026-06-01 16:25:01,514 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:25:02,872 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 40, 'totalTokenCount': 4045, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:25:02,872 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я готов ответить на ваши вопросы, связанные с поступлением и участием в программах академической мобильности. Пожалуйста, задавайте ваши вопросы.
+2026-06-01 16:38:53,601 | CACHE_CREATED | name=cachedContents/hbrm13b03676htrdn119qb88zvpuoq1tch5rh8pd
+2026-06-01 16:39:07,639 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:39:08,868 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 42, 'totalTokenCount': 4047, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:39:08,868 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Я могу помочь вам с вопросами, касающимися поступления на программы академической мобильности. Пожалуйста, задавайте ваши вопросы по теме поступления.
+2026-06-01 16:41:57,555 | CACHE_CREATED | name=cachedContents/ujrcqzpmmvdpgs69a1i6xsy3jqp1vz3wmrh74d28
+2026-06-01 16:41:58,424 | AI_REQUEST | {} | text=Режим ИИ
+2026-06-01 16:41:59,903 | AI_USAGE | {} | {'promptTokenCount': 4005, 'candidatesTokenCount': 110, 'totalTokenCount': 4115, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4005}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 16:41:59,903 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Моя задача — помогать вам с вопросами, связанными с академической мобильностью.
+
+Пожалуйста, уточните, что именно вы имеете в виду под "Режим ИИ". Если ваш вопрос касается использования искусственного интеллекта в процессе академической мобильности или в работе нашего отдела, я готов предоставить информацию, основанную на данных, которые у меня есть.
+
+Если же ваш вопрос не связан с академической мобильностью, я не смогу на него ответить.
+2026-06-01 17:22:45,550 | CACHE_CREATED | name=cachedContents/7dcc7izfl25w90a8lcgqbk511mrjkbtyszvv8j9f
+2026-06-01 17:23:15,734 | AI_REQUEST | {} | text=Hi
+2026-06-01 17:23:17,095 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 15, 'totalTokenCount': 4017, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:23:17,095 | AI_RESPONSE | {} | text=Здравствуйте! Я консультант отдела академической мобильности. Чем могу помочь?
+2026-06-01 17:23:31,817 | AI_REQUEST | {} | text=ЧТо ты можешь делать
+2026-06-01 17:23:34,055 | AI_USAGE | {} | {'promptTokenCount': 4007, 'candidatesTokenCount': 200, 'totalTokenCount': 4207, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4007}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:23:34,055 | AI_RESPONSE | {} | text=Я могу предоставить информацию о следующих аспектах академической мобильности:
+
+*   **Общие положения:** Цели, порядок выездов, определения терминов, формы и виды академической мобильности.
+*   **Нормативные документы:** Перечень документов, на основе которых разработано положение.
+*   **Координация академической мобильности:** Кто координирует международную и внутреннюю мобильность, их функции, источники финансирования и прочие требования.
+*   **Критерии конкурсного отбора:** Основные критерии,
+2026-06-01 17:23:46,056 | AI_REQUEST | {} | text=Дай общие положения
+2026-06-01 17:23:49,392 | AI_USAGE | {} | {'promptTokenCount': 4006, 'candidatesTokenCount': 760, 'totalTokenCount': 4766, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4006}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:23:49,393 | AI_RESPONSE | {} | text=## Общие положения об академической мобильности
+
+Положение об академической мобильности Учреждения «Кокшетауский университет имени Абая Мырзахметова» (КУАМ) определяет общий порядок организации академической мобильности обучающихся и командирования сотрудников.
+
+**Основные цели:**
+
+*   Повышение качества образования.
+*   Расширение и укрепление сотрудничества между зарубежными и казахстанскими вузами.
+
+**Порядок выездов:**
+
+Все выезды сотрудников и обучающихся по программам академической мобильн
+2026-06-01 17:24:06,787 | AI_REQUEST | {} | text=Выход
+2026-06-01 17:24:08,473 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 83, 'totalTokenCount': 4086, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:24:08,473 | AI_RESPONSE | {} | text=Выход из программы академической мобильности осуществляется в соответствии с установленным порядком. Для этого необходимо подать заявление о восстановлении, образец которого представлен в Приложении 3. В заявлении указывается период вашего пребывания за рубежом. После рассмотрения заявления и подтверждения соответствия освоенных дисциплин рабочему плану КУАМ, издается приказ о вашем восстановлении.
+2026-06-01 17:46:42,845 | CACHE_CREATED | name=cachedContents/d36qajhq7odf64nb44ev6ggc9m2nv9n1ocd5ahpb
+2026-06-01 17:46:59,241 | AI_REQUEST | {} | text=Хай
+2026-06-01 17:47:00,442 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 19, 'totalTokenCount': 4022, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:47:00,442 | AI_RESPONSE | {} | text=Здравствуйте! Я готов ответить на ваши вопросы по теме академической мобильности. Чем могу помочь?
+2026-06-01 17:47:05,226 | AI_REQUEST | {} | text=Как дела
+2026-06-01 17:47:06,664 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 52, 'totalTokenCount': 4055, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:47:06,665 | AI_RESPONSE | {} | text=Я — консультант отдела академической мобильности. Моя задача — помогать вам с вопросами, связанными с поступлением и участием в программах академической мобильности. Если у вас есть вопросы по этой теме, я готов на них ответить.
+2026-06-01 17:47:09,445 | AI_REQUEST | {} | text=Выход
+2026-06-01 17:47:11,083 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 83, 'totalTokenCount': 4086, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:47:11,084 | AI_RESPONSE | {} | text=Выход из программы академической мобильности осуществляется в соответствии с установленным порядком. Для этого необходимо подать заявление о восстановлении, образец которого представлен в Приложении 3. В заявлении указывается период вашего пребывания за рубежом. После рассмотрения заявления и подтверждения соответствия освоенных дисциплин рабочему плану КУАМ, издается приказ о вашем восстановлении.
+2026-06-01 17:53:02,079 | CACHE_CREATED | name=cachedContents/1dfuh6412k3h3fnkfgvu618r9twbak8ta6anttmr
+2026-06-01 17:53:44,529 | AI_REQUEST | {} | text=Hi
+2026-06-01 17:53:45,727 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 6, 'totalTokenCount': 4008, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-01 17:53:45,727 | AI_RESPONSE | {} | text=Здравствуйте! Чем могу помочь?
+2026-06-15 15:16:57,032 | CACHE_CREATED | name=cachedContents/61g9cylv99llobahb074kzfbe8d0iojvcym5edje
+2026-06-16 09:17:56,520 | CACHE_CREATED | name=cachedContents/36kmbi5ex3r4p5abutttd2zxfgfpxcj0s0bj4064
+2026-06-16 09:28:02,702 | CACHE_CREATED | name=cachedContents/0bwyx570ij0q010zcgm70sgy91llvqvq6a65hwhk
+2026-06-16 09:28:13,907 | AI_REQUEST | {} | text=Привет
+2026-06-16 09:28:15,509 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 12, 'totalTokenCount': 4015, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-16 09:28:15,510 | AI_RESPONSE | {} | text=Привет! Чем могу помочь по теме академической мобильности?
+2026-06-16 12:34:25,599 | CACHE_CREATED | name=cachedContents/iy58evvyop80h54ochxkkcdyvkmzopzys2i3geli
+2026-06-16 12:34:55,203 | AI_REQUEST | {} | text=hi
+2026-06-16 12:34:56,485 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 12, 'totalTokenCount': 4014, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-16 12:34:56,485 | AI_RESPONSE | {} | text=Здравствуйте! Чем могу помочь по вопросам академической мобильности?
+2026-06-16 14:12:32,240 | CACHE_CREATED | name=cachedContents/vi9pwjj2jlocbfpl6m5vb1urnpmeposj5nldxnj7
+2026-06-16 14:13:11,208 | AI_REQUEST | {} | text=Привет
+2026-06-16 14:13:12,216 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 12, 'totalTokenCount': 4015, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-16 14:13:12,216 | AI_RESPONSE | {} | text=Привет! Чем могу помочь по теме академической мобильности?
+2026-06-16 14:16:29,366 | CACHE_CREATED | name=cachedContents/xk0knr5r9c5fzfh90s4e4yb8sxvpedpspoovo7u0
+2026-06-16 14:17:03,757 | AI_REQUEST | {} | text=Привет
+2026-06-16 14:17:04,785 | AI_USAGE | {} | {'promptTokenCount': 4003, 'candidatesTokenCount': 15, 'totalTokenCount': 4018, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4003}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-16 14:17:04,786 | AI_RESPONSE | {} | text=Привет! Я готов ответить на ваши вопросы по теме академической мобильности.
+2026-06-16 14:21:19,710 | CACHE_CREATED | name=cachedContents/gpqc3wd1icb3x613md0i8p8gaqnls9hac8mohw0m
+2026-06-16 14:22:19,581 | CACHE_CREATED | name=cachedContents/43ijidlct8vg8usoz7x865kbliwan591xm3vf584
+2026-06-16 14:27:24,683 | CACHE_CREATED | name=cachedContents/l2raj1xpzkw38x24eb2sbermc1z8dz7qmu12s1h5
+2026-06-16 14:28:01,935 | CACHE_CREATED | name=cachedContents/z19bq71bww36tgn2e2ywnsvs7sc83o1geiqaojsb
+2026-06-16 14:29:56,052 | AI_REQUEST | {} | text=hi
+2026-06-16 14:29:57,249 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 12, 'totalTokenCount': 4014, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-16 14:29:57,249 | AI_RESPONSE | {} | text=Здравствуйте! Чем могу помочь по теме академической мобильности?
+2026-06-16 14:54:26,064 | CACHE_CREATED | name=cachedContents/tchu3cbz2yhh2kve4hld45zhmbfvwsn7paspy0pi
+2026-06-16 15:07:32,235 | CACHE_CREATED | name=cachedContents/y3qxizd3aoxzeukm5eybvrysdbejf247b0zg5rir
+2026-06-16 15:36:25,061 | CACHE_CREATED | name=cachedContents/dxtigp4x300haarlgav17iw9i5x9s5qgk7x3w6t8
+2026-06-16 15:46:04,906 | CACHE_CREATED | name=cachedContents/2n0dw6j78ukjaagla7iqzmxp7ndkm6yh85c4dxho
+2026-06-16 15:47:59,024 | CACHE_CREATED | name=cachedContents/2rs6406gzokji799hvhxqi1v9vcmthfc9riharqt
+2026-06-16 16:05:29,857 | CACHE_CREATED | name=cachedContents/usrar4yfx116kejob7mrrp9xrprebxicpycbf4p0
+2026-06-16 16:12:33,829 | CACHE_CREATED | name=cachedContents/0hsv53yibi8r11kd2b9lq9xwlcapvav8twne9upf
+2026-06-16 16:14:45,972 | CACHE_CREATED | name=cachedContents/rt6rkxji5rmuniv7oyw92gzrq0qg4ej321qek1t5
+2026-06-16 16:15:03,374 | CACHE_CREATED | name=cachedContents/yas90cwpz6tkgigifi6jv70wwengdgivzycidm58
+2026-06-16 16:16:21,281 | CACHE_CREATED | name=cachedContents/50lovw6og39t4717y1jvn53wruv9c19xqf0gwvuh
+2026-06-16 16:35:09,559 | CACHE_CREATED | name=cachedContents/qp21xqv88d4y0d4zvaoa4zpysklfl4dovo2abvy2
+2026-06-16 16:36:08,446 | CACHE_CREATED | name=cachedContents/k6brjc6siml8bqbjrm2zucqv5bxz1gy0jqcnxo97
+2026-06-16 16:41:06,361 | CACHE_CREATED | name=cachedContents/jdlcvmtf4oddchaeyg2rxcrltkenks81gmme61d4
+2026-06-16 16:44:54,583 | CACHE_CREATED | name=cachedContents/n8mcy94gpzjgxblaj8u1rhvc9i15s9fr0us3f6x7
+2026-06-16 16:45:29,507 | CACHE_CREATED | name=cachedContents/pho17rawohj1cbggg1650it7u1h3dl1n2nz3px46
+2026-06-16 16:46:57,361 | CACHE_CREATED | name=cachedContents/s52p11bwnjp6tvslkll840ivtiyhty7r5uamc66q
+2026-06-16 16:56:35,302 | CACHE_CREATED | name=cachedContents/s34asxgg8w6esmzjbcg120hxm5uc05ilvyxuuskh
+2026-06-16 17:06:38,994 | CACHE_CREATED | name=cachedContents/sj695pq6mkdt31ol5zcrpnt6pwu697unw1210ple
+2026-06-16 17:10:31,041 | CACHE_CREATED | name=cachedContents/znjgpowevrfel37p39xzbnegtezu83mgvxl27wpm
+2026-06-16 17:41:29,932 | CACHE_CREATED | name=cachedContents/alkxdlm3zgy6fhoh4la5aruvb1209j6q5i8u67ti
+2026-06-16 17:44:01,033 | CACHE_CREATED | name=cachedContents/0rcmg3vm7latgn7f2kqhnolx174041n618fgcd60
+2026-06-16 17:45:58,054 | CACHE_CREATED | name=cachedContents/kg1v65ajulak2bx9cxna9dhgp45tyfgekclqpw3f
+2026-06-16 17:46:36,364 | CACHE_CREATED | name=cachedContents/2nun3d46f7frlau7cv858z6jmfe11g2x7hq6rr1p
+2026-06-16 17:50:55,025 | CACHE_CREATED | name=cachedContents/atzj33r0wdgzeloev93lunwmdszeqxmdyz2d07x7
+2026-06-16 17:51:16,007 | AI_REQUEST | {} | text=привет как дила кадилак
+2026-06-16 17:51:17,453 | AI_USAGE | {} | {'promptTokenCount': 4008, 'candidatesTokenCount': 20, 'totalTokenCount': 4028, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4008}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-16 17:51:17,454 | AI_RESPONSE | {} | text=Здравствуйте! Я консультант отдела академической мобильности. Чем могу помочь вам по вопросам поступления?
+2026-06-17 09:24:16,494 | CACHE_CREATED | name=cachedContents/nlewgagxaey8a28y3synz80trisuvtl3llei34np
+2026-06-17 09:32:05,584 | CACHE_CREATED | name=cachedContents/8tevascns6at3y5cf20u4ecquatqd445hm1ok0dp
+2026-06-17 09:32:45,390 | CACHE_CREATED | name=cachedContents/rw9ypzu7uyl19okma4my8gli5ttqnsq70xzmyh9i
+2026-06-17 09:43:23,436 | CACHE_CREATED | name=cachedContents/3km51m2euesclft4ycrae2lma49vyyex7f3kkbap
+2026-06-17 09:43:52,058 | CACHE_CREATED | name=cachedContents/aynkr173234ectzozitheskdly8bzjh0l8p2cy1y
+2026-06-17 10:53:09,242 | CACHE_CREATED | name=cachedContents/dqxl7i3fe1nk01478ibncn5m0j2yksjr19i64buj
+2026-06-17 10:54:06,476 | CACHE_CREATED | name=cachedContents/h60f6lqar2khauxyvrvplm7lprlwybiapghasebf
+2026-06-17 14:22:43,585 | CACHE_CREATED | name=cachedContents/t8ykzwsnl6ko1zxor4gym22i69ijqc5fb6in6xm3
+2026-06-17 14:31:43,214 | CACHE_CREATED | name=cachedContents/0gcrt9puuuo9a2bhpg5bdj6e1fqrmb9c7ccy938l
+2026-06-19 09:39:56,035 | CACHE_CREATED | name=cachedContents/sww04d2u7s7l4nhj4hes8n7u35dkp9h5werzi5kt
+2026-06-22 09:20:41,007 | CACHE_CREATED | name=cachedContents/3n733m493fwo1e1swiht945taqm0d0ld3wjnkkmg
+2026-06-25 10:06:09,987 | CACHE_CREATED | name=cachedContents/qtpz173tehpoyl7f8rjmrdy92j3xr8z4wabd1nlq
+2026-06-25 10:07:34,712 | AI_REQUEST | {} | text=Hi
+2026-06-25 10:07:35,941 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 6, 'totalTokenCount': 4008, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-25 10:07:35,941 | AI_RESPONSE | {} | text=Здравствуйте! Чем могу помочь?
+2026-06-25 10:45:48,157 | CACHE_CREATED | name=cachedContents/4b3ewxc2id4l4afufp1pt21peaaaabvg30hdy3ch
+2026-06-25 14:09:45,546 | CACHE_CREATED | name=cachedContents/wvxa6ks7r4ots0o37tgig7i16s9um5rfxvnhacyg
+2026-06-25 14:50:32,643 | CACHE_CREATED | name=cachedContents/um4x9f4a5c3kejugezztd7ku6338deqh8raoblai
+2026-06-25 15:22:00,467 | CACHE_CREATED | name=cachedContents/yfx5dqo9hnf7kbhmetocezodm8ad8uu6vzra8gqt
+2026-06-25 15:42:33,487 | CACHE_CREATED | name=cachedContents/jtr6gaf4knvjiokuqg2nwoh8izjt53d3gfnsd0h4
+2026-06-25 16:36:14,311 | CACHE_CREATED | name=cachedContents/e6afn110ngur4inu9qozzh942l8vqy8yo1dv62mq
+2026-06-25 16:52:13,979 | CACHE_CREATED | name=cachedContents/zsa7t266k2x7ys5mqq3ambqckf8040fq35m0pd93
+2026-06-25 17:41:01,791 | CACHE_CREATED | name=cachedContents/0kmi17px956n8gnl2ajaggomceomy1sfa7hlr9ks
+2026-06-25 17:41:59,949 | CACHE_CREATED | name=cachedContents/rxauc1pbfq594yp3c8f87p5opzau43x8j8k5fdmo
+2026-06-25 17:43:49,345 | CACHE_CREATED | name=cachedContents/n3z1b9ney7q1eh185ux6o5zmdl5yue5x1l1u041o
+2026-06-25 17:44:03,746 | CACHE_CREATED | name=cachedContents/7gsftgl0lc9xi5age38qouwg9t206gc0xazbww17
+2026-06-25 19:08:55,949 | CACHE_CREATED | name=cachedContents/59lo6dgi287z90tupqqslz3b0my28mc7hyj7diq3
+2026-06-25 19:15:15,084 | CACHE_CREATED | name=cachedContents/9yp669mf273bdmgfcfur32we7vw44gzyic6xhh55
+2026-06-25 19:19:10,081 | CACHE_CREATED | name=cachedContents/xtryobvoskmpevm9m3yfojqe9jzn7agqjmoebsh5
+2026-06-25 19:23:17,054 | CACHE_CREATED | name=cachedContents/tfpz0w7u7w2jgpdikiehtp0dlbdhismxm3nkrgfv
+2026-06-25 19:25:16,437 | CACHE_CREATED | name=cachedContents/za6qyp6fy0b6k2q9wfsxlioajp0we5w7t9yf5r1r
+2026-06-25 19:26:27,583 | CACHE_CREATED | name=cachedContents/6q3lrm643byy9jfn8bvz33tfg5lcakqv9wd1wq94
+2026-06-26 09:20:13,745 | CACHE_CREATED | name=cachedContents/si3413clm1vv2l5dauuq1fuuw71rksb032rz1758
+2026-06-26 09:27:28,022 | CACHE_CREATED | name=cachedContents/zr619crnx3olj1lz4mlx0ttgrtl6gt1qr4x246yi
+2026-06-26 09:34:59,578 | CACHE_CREATED | name=cachedContents/2tuiwrjntkourfd9dmahu1hc7z3uktnb3glmonim
+2026-06-26 09:36:36,207 | CACHE_CREATED | name=cachedContents/zhdylldjurh6f2nbm1p4idgnkugw0xkv01s1g082
+2026-06-26 09:38:49,874 | CACHE_CREATED | name=cachedContents/xa7je3c87vhcy5184i2v006h0qt7ypnr48ll550p
+2026-06-26 09:40:49,925 | CACHE_CREATED | name=cachedContents/gkgfzitndngbbilck4cgu3n2lcli60dms6fsb0aj
+2026-06-26 09:44:19,855 | CACHE_CREATED | name=cachedContents/4ng5ywhnrypqtr4dzficc0m26srj0sevw6qtrhqd
+2026-06-26 09:49:21,570 | CACHE_CREATED | name=cachedContents/h85a2ynnwpu8x3ob2zbs2o9w4i47yxm3k63kpck2
+2026-06-26 09:51:55,895 | CACHE_CREATED | name=cachedContents/7ze0p6ri1yr9n1kx85ici80fal39031k73zjmg93
+2026-06-26 10:32:40,323 | CACHE_CREATED | name=cachedContents/ag718heqkdqj5trs51a1l5qp33k3gg9x9egukw1u
+2026-06-26 10:36:11,126 | CACHE_CREATED | name=cachedContents/3v1rnh6qcj0cczwhgphlg98iyseyt6ooa863w5l2
+2026-06-26 10:51:17,548 | CACHE_CREATED | name=cachedContents/7dfb988qy0wp7i0pqz6j5dxt64vob6dz0gv9ms7u
+2026-06-26 11:48:50,329 | CACHE_CREATED | name=cachedContents/cdkm8daiabkrtnh2dnrhrnffkw7fit2p51ox8wyb
+2026-06-26 11:59:20,013 | CACHE_CREATED | name=cachedContents/fvafnyhwnbpax5cxv69fv240avhmjv803jw1u4l7
+2026-06-26 12:23:29,236 | CACHE_CREATED | name=cachedContents/xus6t4xruvixdth5pdkmlikphyfxkppmcsq7fkuk
+2026-06-26 12:24:50,213 | CACHE_CREATED | name=cachedContents/xff0t1bfp249ydczvjowv9kub59rtu1pxcdxbg3q
+2026-06-26 12:25:39,531 | CACHE_CREATED | name=cachedContents/bmgsh4xlem1iowhj9fblqp27trq2tsuvz09ckfrl
+2026-06-26 12:27:35,956 | CACHE_CREATED | name=cachedContents/cmartdg0uf1lde2rqnhnfsro7i5du65vafq0rloi
+2026-06-26 12:35:56,868 | CACHE_CREATED | name=cachedContents/p9q0009gd02n1ae37mwx4o6x11nfu2x1eb74kbuy
+2026-06-26 12:39:28,685 | CACHE_CREATED | name=cachedContents/di68n1t64e9dmviw2ayl2xdl2otrdmxv1sypki0f
+2026-06-26 12:42:42,522 | CACHE_CREATED | name=cachedContents/4ndczphkns2yszo8ts5e09ugl1jn2lzhfm1eccgx
+2026-06-26 14:18:22,123 | CACHE_CREATED | name=cachedContents/mk4cy1gxyzc2uqfm0upkazd4bh692vsy1s5phqxv
+2026-06-26 14:24:14,760 | CACHE_CREATED | name=cachedContents/w5ebiwnc4lohoqiiux0f8yyjjrnsxcppbrv20mub
+2026-06-26 14:25:02,352 | CACHE_CREATED | name=cachedContents/dyjpepqirjrcpipmpie5zlnqahlctiopio72emxn
+2026-06-26 14:39:46,447 | CACHE_CREATED | name=cachedContents/xrsx9oh6lyd0iadkscwzrevqxoj06jfqqunpgeak
+2026-06-26 14:40:04,707 | CACHE_CREATED | name=cachedContents/du7cmuhquybixfke7l8qoxhbl2y2paj0lyuv9wvr
+2026-06-26 14:52:19,608 | CACHE_CREATED | name=cachedContents/ownzp8xabsx6htde2io5ug3w76iaht1ab5c6qn1j
+2026-06-26 14:54:33,236 | CACHE_CREATED | name=cachedContents/t5d80udojbn0vnuslowhd4v2fltv61z3hzq6at81
+2026-06-26 14:58:48,675 | CACHE_CREATED | name=cachedContents/5qtfdntyhdaebao973kygw0vvx8a7ejry4u6cn9k
+2026-06-26 15:02:05,613 | CACHE_CREATED | name=cachedContents/7y1181zp7aeopndwvk5xbaphs1qre7ak1i3l61jk
+2026-06-26 15:08:27,835 | CACHE_CREATED | name=cachedContents/105f441rcx8kjho3yymer6ael6d77s1hz5tcmdr3
+2026-06-26 15:13:57,664 | CACHE_CREATED | name=cachedContents/ztnh5ovvby6d7pa75taipwk54xjxaud8fo76luhs
+2026-06-26 15:50:27,080 | CACHE_CREATED | name=cachedContents/u5l18x01kpawt1pt78fadrs5isz7s777r20plntx
+2026-06-26 16:05:22,240 | CACHE_CREATED | name=cachedContents/in1a9s38d0w1c1wfrrjh1chdh1qewyhv570oo0w5
+2026-06-26 16:22:14,278 | CACHE_CREATED | name=cachedContents/9pvsyw7qyz6y8rxer5li83krwlyyzbgk6nkbt79h
+2026-06-26 17:06:15,333 | CACHE_CREATED | name=cachedContents/fkmvf22rfjeo44psuuxbuzelyiscydwcp2ls02mz
+2026-06-26 17:12:07,422 | CACHE_CREATED | name=cachedContents/inib1c7ots7s90dgjh2fef3q55mefdjiu139ns26
+2026-06-26 17:13:50,326 | CACHE_CREATED | name=cachedContents/gsgv898rnlv3yscxflep5ta41s6rt40b5xl6mihs
+2026-06-26 17:15:55,853 | CACHE_CREATED | name=cachedContents/t98oh32vo899rdv8envp34wf1el2d8ha7grnhggu
+2026-06-26 17:31:04,800 | CACHE_CREATED | name=cachedContents/kjrpeq3g8np4rmj269v21b25bdt3fbrwesygxh7t
+2026-06-26 17:33:05,953 | CACHE_CREATED | name=cachedContents/frah36dnntjx0mnsc50um087g3gv0inzp4a5kzby
+2026-06-26 17:36:38,318 | CACHE_CREATED | name=cachedContents/dpxidvfyyzg7rlms274bi3j5vgcyfpga3jud0cif
+2026-06-26 17:43:24,165 | CACHE_CREATED | name=cachedContents/nu7bi6aewx789dfsdwd490q8rawsjc0gmlnnyglb
+2026-06-26 17:55:37,697 | CACHE_CREATED | name=cachedContents/7oqf6f9nyrxbmduv6uj4huvpvpzof82ip5iwqrfp
+2026-06-26 18:11:14,859 | CACHE_CREATED | name=cachedContents/t9e4xrjgpu3wf9fwbp3hdgjphhwke9htdzbqbpev
+2026-06-26 18:20:58,935 | CACHE_CREATED | name=cachedContents/fwlq3e31algdqh9l78l12vfd1mqjqnw7pii042ue
+2026-06-26 18:22:58,328 | CACHE_CREATED | name=cachedContents/kwiy3gk1fdvushcgyw3iqidxv7xw3raiz9tg46yk
+2026-06-26 18:52:27,459 | CACHE_CREATED | name=cachedContents/pqg5qsng7riafoiq5048w2trx2o1f0xvm52h3cc8
+2026-06-26 18:54:17,279 | CACHE_CREATED | name=cachedContents/tfadnq61yw3x0cto6i8nnidw1vc7j3pxcdpg5g85
+2026-06-26 19:05:46,736 | CACHE_CREATED | name=cachedContents/h5qdpbzfojhd08l86gtv1khyuls177m0vy81s1ee
+2026-06-26 19:24:32,272 | CACHE_CREATED | name=cachedContents/6jk7fcipymwes8geqqrv7egmf7pnovl258t2x5hp
+2026-06-26 19:26:14,605 | CACHE_CREATED | name=cachedContents/mftitvocsxo32n70qh1iodzjrecap4fmthzebhk4
+2026-06-26 19:26:37,328 | CACHE_CREATED | name=cachedContents/zpg14k18ukhr3chb0uxo6d616ulbh3298r8gcdnt
+2026-06-26 19:27:08,047 | CACHE_CREATED | name=cachedContents/63g27pj26lu5zqy9vse17qlhqc4ea8q5yejkkgj7
+2026-06-26 20:34:11,716 | CACHE_CREATED | name=cachedContents/c498pu3t1jr4qgxnghe6mt8qs67xv0h5qr8gohvu
+2026-06-26 20:34:33,785 | CACHE_CREATED | name=cachedContents/3tu2s759xf9j9j049rn0zd2cj4urayyqr6xxb201
+2026-06-26 22:30:22,868 | CACHE_CREATED | name=cachedContents/0g68rrp8jp6owgdvk4n7fc4m41rben19976wl25v
+2026-06-26 22:33:45,461 | CACHE_CREATED | name=cachedContents/0cu7vzmor4k1lf6oako017h3op5n59hkqx0segx4
+2026-06-26 22:41:54,340 | CACHE_CREATED | name=cachedContents/tjdqry5m3ozmsicyiok0hsj1ak8crfjstfqlymvf
+2026-06-26 23:22:52,610 | AI_REQUEST | {} | text=hi
+2026-06-26 23:22:54,409 | AI_USAGE | {} | {'promptTokenCount': 4002, 'candidatesTokenCount': 12, 'totalTokenCount': 4014, 'cachedContentTokenCount': 3969, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 4002}], 'cacheTokensDetails': [{'modality': 'TEXT', 'tokenCount': 3969}], 'serviceTier': 'standard'}
+2026-06-26 23:22:54,409 | AI_RESPONSE | {} | text=Здравствуйте! Чем могу помочь по теме академической мобильности?
+2026-06-28 21:59:17,186 | CACHE_CREATED | name=cachedContents/nbv60lbo5v8j9pyryclx80er3afhgvtytvdliqay
+2026-06-28 22:56:33,976 | CACHE_CREATED | name=cachedContents/ghe3ysn8biag37wf8v9c30qhc6hmgjsx39osj3si
+2026-06-29 00:31:44,739 | CACHE_CREATED | name=cachedContents/3w2jcpyf3mwh1qq4x21mn7p17pcxywuxvcusud6k
+2026-06-29 00:42:32,931 | CACHE_CREATED | name=cachedContents/6kup52gmdgewej3tjy5qq8p8cfmotju4blrv2s2p
+2026-06-29 00:43:34,716 | CACHE_CREATED | name=cachedContents/upuyrq9tggtfvub867sjco162xoy7ymqdc2dfus7
+2026-06-29 00:44:52,216 | CACHE_CREATED | name=cachedContents/geiz98jotd1hbr0snk0rr21iyvn8i8bkpjq4a1fl
+2026-06-29 01:46:30,066 | CACHE_CREATED | name=cachedContents/otbf32lxydbuekpcpp9y2sif0cy92xt73eqcaf97
+2026-06-29 01:49:12,103 | CACHE_CREATED | name=cachedContents/mqf72jwti64ch6t131fapts59ou46r6rb2nowgk9
+2026-06-29 02:20:01,822 | CACHE_CREATED | name=cachedContents/yj85qyrx1mk1b3s0beqxqhk7cyulw7gi4ho1j363
+2026-06-29 02:26:19,472 | CACHE_CREATED | name=cachedContents/dj99t85lsw7hwaxx5uvjujr3o41sya0930cguv1p
+2026-06-29 02:28:50,707 | CACHE_CREATED | name=cachedContents/elwj50vc5ycw6sapfbiy6571hlw2ie5tu6elpxa9
+2026-06-29 02:31:07,304 | CACHE_CREATED | name=cachedContents/pt31qx5h5pyuii7xzkkkgqb97k5b7ny0s9g6sjk0
+2026-06-29 02:32:09,412 | CACHE_CREATED | name=cachedContents/g5ozuwe1d74iu1wtwro7d8u1dbhb3mtcfucm4hi6
+2026-06-29 02:42:58,513 | CACHE_CREATED | name=cachedContents/uedqhxu9hl2a1u2ikjmraecpxxmaq1nttp3iax0y
+2026-06-29 02:44:00,090 | CACHE_CREATED | name=cachedContents/fo5swfguttmtyaserefmsebkcna7ivrhr07inqtm
+2026-06-29 02:44:54,650 | CACHE_CREATED | name=cachedContents/6ojdgjegp6g73gkepny3qk9boug0w0ri8gj1diw4
+2026-06-29 02:46:16,703 | CACHE_CREATED | name=cachedContents/q87xqvahzwdhr3y9840xxeytj7ji1mm5uu5zqkus
+2026-06-29 02:49:51,006 | CACHE_CREATED | name=cachedContents/hli7gob4knzeqcf8orj4s29tex9rqp9ti50r2jxi
+2026-06-29 02:51:16,802 | CACHE_CREATED | name=cachedContents/l2miv9ks7z5l9e4vy5d1yyfbdv1bxg9xe7vlg30z
+2026-06-29 02:54:24,035 | CACHE_CREATED | name=cachedContents/jfbhf5ivc89vuiiw0bfwxj7dkk1brllkzm2r7910
+2026-06-29 03:33:20,751 | CACHE_CREATED | name=cachedContents/5oksfyxpfrnouzebyultuqaynnf766s4jsobj0q1
+2026-06-29 03:39:01,079 | CACHE_CREATED | name=cachedContents/zqky3oz8m7zxdpige60depxzyc5ivc3zyrrtbvur
+2026-06-29 03:55:29,710 | CACHE_CREATED | name=cachedContents/634ohhsjnqxc4oiqenhsnfitb1wgl75rnwog53t6
+2026-06-29 03:57:17,703 | CACHE_CREATED | name=cachedContents/21nyq9y4nf4v4esrvzaq3pg12iymd25abcm1j4rz
+2026-06-29 03:57:50,084 | CACHE_CREATED | name=cachedContents/83i5afuesw8dsmj7nr0bn84174ob8pm4jzjedyvm
+2026-06-29 04:00:15,200 | CACHE_CREATED | name=cachedContents/wgsas5c0wdqzkjcbjd5g5cbhc5m19y426liq10rm
+2026-06-29 04:02:16,661 | CACHE_CREATED | name=cachedContents/9haza5jwrvf1979r0i5o9yovpvom4wtedyvulpzk
+2026-06-29 04:34:17,812 | CACHE_CREATED | name=cachedContents/bbrf8u23wow12rsvt7ay25s054exunrjqbvnjks0
+2026-06-29 04:37:00,901 | CACHE_CREATED | name=cachedContents/6qd1rjs2ypxwg7lcl6rx2hu064rih7pznybdzq4z
+2026-06-29 04:38:10,717 | CACHE_CREATED | name=cachedContents/03du65lmanar8ncjdprc3o3t6k1l6segji1gjivz
+2026-06-29 04:40:01,364 | CACHE_CREATED | name=cachedContents/hxc3y0mx4n2q8a720atgdfv717gzplmu0kt75g37
+2026-06-29 04:43:59,191 | CACHE_CREATED | name=cachedContents/bzzg5ecectatioc9nurogikgljmd9ncieil6yfvo
+2026-06-29 04:44:46,587 | CACHE_CREATED | name=cachedContents/ys715x3bapzmno3hb8jg6bnzq0pfehiinfnd8qcz
+2026-06-29 04:56:15,000 | CACHE_CREATED | name=cachedContents/i3k1qxcnoca5crbh0mncpd0681k6odzr468xl0dr
+2026-06-29 04:59:58,675 | CACHE_CREATED | name=cachedContents/a1k1r26zh95w1xdcytha22n51mbrg9m32uf55vii
+2026-06-29 05:03:08,704 | CACHE_CREATED | name=cachedContents/llhh0pygl186yzw4cg52rwl1isc9sddvbg5bbqqj
+2026-06-29 05:07:35,833 | CACHE_CREATED | name=cachedContents/ptk0ubsa4utajwec2tyys8leaeaegu1axmxxeyh1
+2026-06-29 05:12:22,714 | CACHE_CREATED | name=cachedContents/odt2meac3esrvrjbuqdq2ikood61uyof3i4g4l6w
+2026-06-29 05:27:03,432 | CACHE_CREATED | name=cachedContents/jipglagxp8dnpo0ip7z7d0hlzmajumau4dqtsuz6
+2026-06-29 05:28:18,559 | CACHE_CREATED | name=cachedContents/xuu5p4b3drpmw9rfhst75iiyzijw8ally7f9gfp4
+2026-06-29 05:32:33,040 | CACHE_CREATED | name=cachedContents/crv4xg5nqqc47sfin3iewbty208uaby9brsyiybj
+2026-06-29 05:33:17,259 | CACHE_CREATED | name=cachedContents/iq6bvvam00u6cz7ttpkudftcpdcizkoat7hdq4bv
+2026-06-29 05:36:54,791 | CACHE_CREATED | name=cachedContents/5kxhp4h2o9xrv9xui0ls9sqja7e0ya1q42767h8g
+2026-06-29 05:41:25,882 | CACHE_CREATED | name=cachedContents/lf6bj9p5jj3i3hi28gy7sj8j55aiol4oo18sdzki
+2026-06-29 05:43:41,829 | CACHE_CREATED | name=cachedContents/0iyzm67cf9xq88zrdjb3g26e0ug0hphpxio2bmlr
+2026-06-29 05:44:30,164 | CACHE_CREATED | name=cachedContents/w9liyzesvwip8jpj01yuoavw2tb9l730e2ic2bb5
+2026-06-29 05:45:25,867 | CACHE_CREATED | name=cachedContents/unukp81ckkj6nuw4q8ifc74rtacbz1qngmpgm77m
+2026-06-29 05:46:42,771 | CACHE_CREATED | name=cachedContents/vqirb39p62wggkzdsc3s0lt5j0blaj6ym5c75k9h
+2026-06-29 05:57:29,545 | CACHE_CREATED | name=cachedContents/1wfm2um903rpp5mbemu8oyuf0dkgsrw12pu213i2
+2026-06-29 06:14:49,620 | CACHE_CREATED | name=cachedContents/ywcoenwnogtta4zy011tfn8qwf5btn3e61g8zkrw
+2026-06-29 06:16:44,854 | CACHE_CREATED | name=cachedContents/4hbvejb2jzi9abgi9fn9cjiafomjm5539ok7jdbv
+2026-06-29 06:34:23,050 | CACHE_CREATED | name=cachedContents/y4t2s0ndishcptlcs3uh03cd3gj4rt4xpru49bug
+2026-06-29 06:48:52,541 | CACHE_CREATED | name=cachedContents/md1qqbx9d7wzbu92wp9u0qii0yabd68omqy41mn8
+2026-06-29 07:06:07,957 | CACHE_CREATED | name=cachedContents/jeo347p2go28d5h1jfxb6ublwuw7zzk2kwjhhnn2
+2026-06-29 07:17:56,379 | CACHE_CREATED | name=cachedContents/ouh2yz84cpjwbzkvjmx606u67l6djpjjg7eyyg1v
+2026-06-29 07:18:12,226 | CACHE_CREATED | name=cachedContents/xem0lr7b4yh8sirdispmn3mus7qx2uwrvhcin7jt
+2026-06-29 07:29:32,193 | CACHE_CREATED | name=cachedContents/4l9f6nzy38g2a1trabhxbblv701bbsv9xx3cievj
+2026-06-29 09:42:35,799 | CACHE_CREATED | name=cachedContents/khwfp65esfox0nzk2jj2xm440kfn74xuzn05akf8
+2026-06-29 16:56:40,169 | CACHE_ERROR | 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta/cachedContents?key=None
+2026-06-29 16:57:16,105 | CACHE_ERROR | 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta/cachedContents?key=None
+2026-10-23 10:37:40,727 | SEARCH_ERROR | endpoint=/search | attempt=1/1 | status=500 | body={"message": "Search error"} | duration_ms=0
+2026-10-23 10:37:40,727 | AI_REQUEST | meta={} | stats={"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024}
+2026-10-23 10:37:40,728 | AI_USAGE | {"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024, "promptTokenCount": 120, "cachedContentTokenCount": 0, "thoughtsTokenCount": 8, "candidatesTokenCount": 20, "totalTokenCount": 148, "duration_ms": 1}
+2026-10-23 10:37:40,728 | AI_RESPONSE | route=knowledge | chars=14
+2026-10-23 10:38:22,820 | SEARCH_ERROR | endpoint=/search | attempt=1/1 | status=500 | body={"message": "Search error"} | duration_ms=0
+2026-10-23 10:38:22,820 | AI_REQUEST | meta={} | stats={"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024}
+2026-10-23 10:38:22,820 | AI_USAGE | {"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024, "promptTokenCount": 120, "cachedContentTokenCount": 0, "thoughtsTokenCount": 8, "candidatesTokenCount": 20, "totalTokenCount": 148, "duration_ms": 1}
+2026-10-23 10:38:22,820 | AI_RESPONSE | route=knowledge | chars=14
+2026-10-23 10:39:57,695 | SEARCH_ERROR | endpoint=/search | attempt=1/1 | status=500 | body={"message": "Search error"} | duration_ms=0
+2026-10-23 10:39:57,696 | AI_REQUEST | meta={} | stats={"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024}
+2026-10-23 10:39:57,696 | AI_USAGE | {"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024, "promptTokenCount": 120, "cachedContentTokenCount": 0, "thoughtsTokenCount": 8, "candidatesTokenCount": 20, "totalTokenCount": 148, "duration_ms": 1}
+2026-10-23 10:39:57,696 | AI_RESPONSE | route=knowledge | chars=14
+2026-11-03 09:34:34,709 | SEARCH_ERROR | endpoint=/search | attempt=1/1 | status=500 | body={"message": "Search error"} | duration_ms=0
+2026-11-03 09:34:34,710 | AI_REQUEST | meta={} | stats={"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024}
+2026-11-03 09:34:34,710 | AI_USAGE | {"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024, "promptTokenCount": 120, "cachedContentTokenCount": 0, "thoughtsTokenCount": 8, "candidatesTokenCount": 20, "totalTokenCount": 148, "duration_ms": 1}
+2026-11-03 09:34:34,710 | AI_RESPONSE | route=knowledge | chars=14
+2026-11-03 09:35:27,752 | AI_REQUEST | meta={} | stats={"route": "chat", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "low", "max_output_tokens": 512}
+2026-11-03 09:35:27,752 | AI_HTTP_ERROR | status=503 | body={"error": {"message": "unavailable"}}
+2026-11-03 09:35:27,753 | SEARCH_ERROR | endpoint=/search | attempt=1/1 | status=500 | body={"message": "Search error"} | duration_ms=0
+2026-11-03 09:35:27,753 | AI_REQUEST | meta={} | stats={"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024}
+2026-11-03 09:35:27,754 | AI_USAGE | {"route": "knowledge", "system_chars": 302, "system_est_tokens": 76, "history_messages": 0, "history_chars": 0, "document_chunks": 0, "document_chars": 0, "cached_content": false, "thinking_level": "medium", "max_output_tokens": 1024, "promptTokenCount": 120, "cachedContentTokenCount": 0, "thoughtsTokenCount": 8, "candidatesTokenCount": 20, "totalTokenCount": 148, "duration_ms": 0}
+2026-11-03 09:35:27,754 | AI_RESPONSE | route=knowledge | chars=14

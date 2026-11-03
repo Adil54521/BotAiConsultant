@@ -1,0 +1,39 @@
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<div class="container" id="container">
+	<div class="form-container sign-up-container">
+		<form action="#">
+			<h1>Создать аккаунт</h1>
+			<input id="name" type="text" placeholder="Логин" />
+			<input id="mail" type="email" placeholder="E-mail" />
+			<input id="password" type="password" placeholder="Пароль" />
+			<button id="sgn-up" type="submit">Зарегистрироваться</button>
+			<div class="error" id="error"></div>
+		</form>
+	</div>
+	<div class="form-container sign-in-container">
+		<form action="#">
+			<h1>Введите логин и пароль</h1>
+			<input id="login" type="text" placeholder="Логин" />
+			<input id="passwordism" type="password" placeholder="Пароль" />
+			<a href="#">Забыли пароль ?</a>
+			<button id="sgn" type="submit">Войти</button>
+			<div class="errorin" id="errorin"></div>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<p>Для авторизации нажмите здесь</p>
+				<button class="ghost" id="signIn">Войти</button>
+			</div>
+			<div class="overlay-panel overlay-right">
+				<p>Для регистрации нажмите здесь</p>
+				<button class="ghost" id="signUp">Зарегистрироваться</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="scripts.js"></script>

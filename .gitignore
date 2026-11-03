@@ -1,0 +1,8 @@
+.env
+config.env
+myvenv/
+node_modules/
+__pycache__/
+*.pyc
+.uv-cache/
+.uv-python/
