@@ -119,7 +119,7 @@ class Gemini:
         if not self.api_key:
             raise RuntimeError("GEMINI_API_KEY отсутствует в .env")
         self.base_url = "https://generativelanguage.googleapis.com/v1beta"
-        self.model = os.getenv("GEMINI_MODEL", "models/gemini-3.8-flash")
+        self.model = os.getenv("GEMINI_MODEL", "models/gemini-3.5-flash-lite")
         self.cache_name = None
         self.session = session
 
