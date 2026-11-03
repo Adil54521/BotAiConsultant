@@ -111,6 +111,11 @@ const {
 const MAX_SIZE = 100 * 1024 * 1024;
 const server = route.createServer(async (req, res) => {
     console.log(req.method, req.url);
+    const requestUrl = new URL(req.url, "http://127.0.0.1");
+    const normalizedPath = requestUrl.pathname.replace(/\/+$/, "") || "/";
+    const internalPath = normalizedPath.startsWith("/api/internal/")
+        ? normalizedPath.slice(4)
+        : normalizedPath;
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Access-Control-Allow-Origin', 'https://undercook-habitable-disposal.ngrok-free.dev');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -127,13 +132,13 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
-    if (req.url.startsWith("/internal/") && !isInternalAuthorized(req)) {
+    if (internalPath.startsWith("/internal/") && !isInternalAuthorized(req)) {
         res.writeHead(403, {"Content-Type": "application/json"});
         res.end(JSON.stringify({error: "Forbidden"}));
         return;
     }
 
-    if (req.method === "GET" && req.url === "/internal/health") {
+    if (req.method === "GET" && internalPath === "/internal/health") {
         res.end(JSON.stringify({
             service: "bot-backend",
             apiVersion: 2,
@@ -142,10 +147,9 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
-    if (req.method === "GET" && req.url.startsWith("/internal/bot-user?")) {
+    if (req.method === "GET" && internalPath === "/internal/bot-user") {
         try {
-            const url = new URL(req.url, "http://127.0.0.1");
-            const user = await getBotUser(url.searchParams.get("telegramId"));
+            const user = await getBotUser(requestUrl.searchParams.get("telegramId"));
             res.end(JSON.stringify({registered: Boolean(user && user.phone_verified), user}));
         } catch (error) {
             console.error(`BOT_USER_LOOKUP_ERROR type=${error.constructor.name}`);
@@ -155,7 +159,7 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
-    if (req.method === "POST" && req.url === "/internal/bot-user/register") {
+    if (req.method === "POST" && internalPath === "/internal/bot-user/register") {
         try {
             const user = await registerBotUser(await readJsonBody(req));
             res.end(JSON.stringify({success: true, user}));
@@ -163,12 +167,12 @@ const server = route.createServer(async (req, res) => {
             const invalid = ["INVALID_PHONE", "INVALID_TELEGRAM_ID"].includes(error.message);
             console.error(`BOT_USER_REGISTER_ERROR type=${error.constructor.name}`);
             res.writeHead(invalid ? 400 : 500);
-            res.end(JSON.stringify({success: false, error: invalid ? "Invalid phone" : "Server error"}));
+            res.end(JSON.stringify({success: false, error: invalid ? "Invalid registration data" : "Server error"}));
         }
         return;
     }
 
-    if (req.method === "POST" && req.url === "/internal/ai/usage") {
+    if (req.method === "POST" && internalPath === "/internal/ai/usage") {
         try {
             const result = await recordAiUsage(await readJsonBody(req));
             res.end(JSON.stringify({success: true, ...result}));
@@ -180,7 +184,7 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
-    if (req.method === "POST" && req.url === "/internal/support/request") {
+    if (req.method === "POST" && internalPath === "/internal/support/request") {
         try {
             const data = await readJsonBody(req);
             const result = data.action === "open"
@@ -195,7 +199,7 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
-    if (req.method === "POST" && req.url === "/internal/admin/analytics") {
+    if (req.method === "POST" && internalPath === "/internal/admin/analytics") {
         try {
             const data = await readJsonBody(req);
             let result;

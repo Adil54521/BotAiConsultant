@@ -60,8 +60,9 @@ class RegistrationAndAdminTests(unittest.TestCase):
         backend = Path("index.js").read_text(encoding="utf-8")
         compose = Path("docker-compose.yml").read_text(encoding="utf-8")
         nginx = Path("nginx.conf").read_text(encoding="utf-8")
-        self.assertIn('req.method === "POST" && req.url === "/internal/bot-user/register"', backend)
-        self.assertIn('req.url === "/internal/health"', backend)
+        self.assertIn('internalPath === "/internal/bot-user/register"', backend)
+        self.assertIn('internalPath === "/internal/health"', backend)
+        self.assertIn('normalizedPath.startsWith("/api/internal/")', backend)
         self.assertIn("PORT=8004", compose)
         self.assertNotIn("api:8000", nginx)
 

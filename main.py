@@ -62,6 +62,7 @@ bot = Bot(token=TOKEN)
 ai_service = Gemini()
 mode_coordinator = ModeCoordinator()
 backend_session = None
+backend_api_prefix = ""
 
 
 def user_ref(user_id):
@@ -155,7 +156,7 @@ async def backend_post(path, payload):
     try:
         headers = {"x-internal-token": INTERNAL_API_TOKEN} if INTERNAL_API_TOKEN else {}
         async with backend_session.post(
-            f"{BACKEND_URL}{path}", json=payload, headers=headers,
+            f"{BACKEND_URL}{backend_api_prefix}{path}", json=payload, headers=headers,
             timeout=aiohttp.ClientTimeout(total=30 if path.startswith("/internal/admin/") else 12)
         ) as response:
             text = await response.text()
@@ -179,7 +180,7 @@ async def backend_get(path):
         return False, None
     try:
         async with backend_session.get(
-            f"{BACKEND_URL}{path}", headers={"x-internal-token": INTERNAL_API_TOKEN},
+            f"{BACKEND_URL}{backend_api_prefix}{path}", headers={"x-internal-token": INTERNAL_API_TOKEN},
             timeout=aiohttp.ClientTimeout(total=12),
         ) as response:
             if response.status >= 400:
@@ -203,7 +204,19 @@ async def get_registration(user_id):
 
 
 async def check_backend_contract():
-    ok, payload = await backend_get("/internal/health")
+    global backend_api_prefix
+    for candidate in ("", "/api"):
+        backend_api_prefix = candidate
+        ok, payload = await backend_get("/internal/health")
+        if ok and payload and payload.get("service") == "bot-backend" and payload.get("apiVersion") == 2:
+            logger.info(
+                "BACKEND_READY | api_version=%s | schema_target=%s | api_prefix=%r",
+                payload.get("apiVersion"),
+                payload.get("schemaTarget"),
+                backend_api_prefix,
+            )
+            return True
+    backend_api_prefix = ""
     if not ok or not payload:
         logger.critical(
             "BACKEND_CONTRACT_ERROR | expected_api_version=2 | backend_url=%s",
@@ -215,12 +228,6 @@ async def check_backend_contract():
         logger.critical(
             "BACKEND_CONTRACT_ERROR | expected_api_version=2 | actual_api_version=%r",
             payload.get("apiVersion"),
-        )
-    else:
-        logger.info(
-            "BACKEND_READY | api_version=%s | schema_target=%s",
-            payload.get("apiVersion"),
-            payload.get("schemaTarget"),
         )
     return compatible
 
