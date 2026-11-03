@@ -50,6 +50,13 @@ class RegistrationAndAdminTests(unittest.TestCase):
         self.assertEqual(end.isoformat(), "2026-11-03T19:00:00+00:00")
         self.assertEqual(label, "03.11.2026–03.11.2026")
 
+    def test_all_admin_period_presets_have_valid_utc_boundaries(self):
+        now = datetime(2026, 11, 3, 12, tzinfo=LOCAL_TZ)
+        for kind in ("today", "yesterday", "7d", "30d", "month", "all"):
+            start, end, label = period_bounds(kind, now)
+            self.assertLess(start, end, kind)
+            self.assertIsNotNone(label)
+
     def test_migration_extends_existing_tables_without_duplicates(self):
         migration = Path("migrations/001_bot_registration_analytics.sql").read_text(encoding="utf-8")
         self.assertIn("ALTER TABLE chats", migration)
@@ -99,6 +106,30 @@ class ExcelReportTests(unittest.TestCase):
                 self.assertEqual(users["C2"].value, "'=FORMULA")
                 self.assertEqual(users["L2"].value, 125)
                 self.assertEqual(users.freeze_panes, "A2")
+            finally:
+                workbook.close()
+
+    def test_empty_period_generates_a_valid_report(self):
+        data = {
+            "overview": {
+                "registered_users": "0", "new_users": "0", "active_users": "0",
+                "ai_users": "0", "ai_requests": "0", "successful_requests": "0",
+                "failed_requests": "0", "prompt_tokens": "0", "candidate_tokens": "0",
+                "thoughts_tokens": "0", "cached_tokens": "0", "total_tokens": "0",
+                "total_duration_ms": "0",
+            },
+            "users": [], "usage": [], "support": [],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "empty.xlsx"
+            build_usage_report(data, "01.01.2020–01.01.2020", path)
+            workbook = load_workbook(path, read_only=False, data_only=True)
+            try:
+                self.assertEqual(len(workbook.sheetnames), 4)
+                overview = workbook["Общая статистика"]
+                values = {overview.cell(row=row, column=1).value: overview.cell(row=row, column=2).value
+                          for row in range(5, overview.max_row + 1)}
+                self.assertEqual(values["Всего токенов"], "0")
             finally:
                 workbook.close()
 

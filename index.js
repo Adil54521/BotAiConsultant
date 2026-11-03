@@ -14,6 +14,7 @@ const path = require("path");
 const pool = require("./db");
 const {resolveInternalToken, isInternalAuthorized: verifyInternalRequest} = require("./internal_auth");
 const {logSafeError} = require("./backend_diagnostics");
+const {AnalyticsValidationError, normalizeAnalyticsRequest} = require("./admin_analytics");
 const { PDFParse } = require("pdf-parse");
 const { createEmbedding } = require("./gemini");
 const {
@@ -31,6 +32,7 @@ const {
 
 const internalAuth = resolveInternalToken(process.env.INTERNAL_API_TOKEN, process.env.JWT_SECRET);
 const INTERNAL_API_TOKEN = internalAuth.token;
+const ADMIN_TELEGRAM_ID = String(process.env.ADMIN_TELEGRAM_ID || "").trim();
 console.log(`INTERNAL_AUTH_CONFIG scheme=${internalAuth.scheme} secret_present=${Boolean(INTERNAL_API_TOKEN)}`);
 
 function isInternalAuthorized(req) {
@@ -247,23 +249,45 @@ const server = route.createServer(async (req, res) => {
     }
 
     if (req.method === "POST" && internalPath === "/internal/admin/analytics") {
+        let stage = "read_json";
         try {
             const data = await readJsonBody(req);
+            stage = "authorize_admin";
+            if (!/^[1-9]\d*$/.test(ADMIN_TELEGRAM_ID)
+                || String(data.adminTelegramId || "") !== ADMIN_TELEGRAM_ID) {
+                const error = new Error("ADMIN_ACCESS_DENIED");
+                error.code = "ADMIN_ACCESS_DENIED";
+                error.parameter = "adminTelegramId";
+                throw error;
+            }
+            stage = "validate_request";
+            const request = normalizeAnalyticsRequest(data);
+            stage = `query_${request.action}`;
             let result;
-            if (data.action === "overview") result = await getOverview(data.from, data.to);
-            else if (data.action === "users") result = await getUserStats(data.from, data.to, data.search, data.limit, data.offset);
-            else if (data.action === "report") result = {
-                overview: await getOverview(data.from, data.to),
-                users: await getUserStats(data.from, data.to, null, 200000, 0),
-                usage: await getUsageRows(data.from, data.to),
-                support: await getSupportRows(data.from, data.to)
+            if (request.action === "overview") result = await getOverview(request.from, request.to);
+            else if (request.action === "users") result = await getUserStats(
+                request.from, request.to, request.search, request.limit, request.offset
+            );
+            else if (request.action === "report") result = {
+                overview: await getOverview(request.from, request.to),
+                users: await getUserStats(request.from, request.to, null, 200000, 0),
+                usage: await getUsageRows(request.from, request.to),
+                support: await getSupportRows(request.from, request.to)
             };
-            else throw new Error("INVALID_ACTION");
             res.end(JSON.stringify({success: true, data: result}));
         } catch (error) {
-            console.error(`ADMIN_ANALYTICS_ERROR type=${error.constructor.name}`);
-            res.writeHead(400);
-            res.end(JSON.stringify({success: false, error: "Invalid request"}));
+            logSafeError("admin_analytics", error, requestId, stage);
+            if (error.code === "ADMIN_ACCESS_DENIED") {
+                res.writeHead(403);
+                res.end(JSON.stringify({success: false, error: "Forbidden"}));
+            } else if (error instanceof AnalyticsValidationError
+                       || ["INVALID_JSON", "BODY_TOO_LARGE"].includes(error.message)) {
+                res.writeHead(400);
+                res.end(JSON.stringify({success: false, error: "Invalid request"}));
+            } else {
+                res.writeHead(500);
+                res.end(JSON.stringify({success: false, error: "Server error"}));
+            }
         }
         return;
     }

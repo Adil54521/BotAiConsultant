@@ -288,7 +288,11 @@ async def selected_period(state):
 async def analytics_request(action, state, **extra):
     start, end, label = await selected_period(state)
     ok, text = await backend_post("/internal/admin/analytics", {
-        "action": action, "from": start.isoformat(), "to": end.isoformat(), **extra
+        "action": action,
+        "adminTelegramId": ADMIN_TELEGRAM_ID,
+        "from": start.isoformat(),
+        "to": end.isoformat(),
+        **extra,
     })
     if not ok:
         return None, label
@@ -466,6 +470,10 @@ async def admin_callback(callback: CallbackQuery, state: FSMContext):
                 f"Запросов: {metric(data.get('ai_requests'))}\n"
                 f"Успешных: {metric(data.get('successful_requests'))}\n"
                 f"Ошибок/отмен: {metric(data.get('failed_requests'))}\n"
+                f"Входных токенов: {metric(data.get('prompt_tokens'))}\n"
+                f"Выходных токенов: {metric(data.get('candidate_tokens'))}\n"
+                f"Thinking-токенов: {metric(data.get('thoughts_tokens'))}\n"
+                f"Кэшированных токенов: {metric(data.get('cached_tokens'))}\n"
                 f"Всего токенов: {metric(data.get('total_tokens'))}\n"
                 f"Среднее токенов: {metric(data.get('avg_tokens'))}\n"
                 f"Общее время, мс: {metric(data.get('total_duration_ms'))}\n"

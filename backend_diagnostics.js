@@ -23,6 +23,7 @@ function safeErrorMetadata(operation, error, requestId, stage) {
         schema: error && error.schema || null,
         table: error && error.table || null,
         column: error && error.column || null,
+        parameter: error && error.parameter || null,
         constraint: error && error.constraint || null,
         routine: error && error.routine || null,
         location: stackLine || null,

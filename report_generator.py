@@ -73,6 +73,8 @@ def build_usage_report(data, period_label, output_path):
         ("Уникальные активные пользователи", "active_users"),
         ("Пользователи ИИ", "ai_users"), ("Запросы к ИИ", "ai_requests"),
         ("Успешные запросы", "successful_requests"), ("Ошибки ИИ", "failed_requests"),
+        ("Входные токены", "prompt_tokens"), ("Выходные токены", "candidate_tokens"),
+        ("Thinking-токены", "thoughts_tokens"), ("Кэшированные токены", "cached_tokens"),
         ("Всего токенов", "total_tokens"), ("Среднее токенов на запрос", "avg_tokens"),
         ("Общее время ИИ, мс", "total_duration_ms"), ("Среднее время ИИ, мс", "avg_duration_ms"),
         ("Обращения к сотрудникам", "support_requests"), ("Пользователи поддержки", "support_users"),
@@ -83,10 +85,10 @@ def build_usage_report(data, period_label, output_path):
         append_row(overview_sheet, [label, value if value is not None else "Нет данных"])
 
     users_sheet = workbook.create_sheet("Статистика пользователей")
-    set_widths(users_sheet, [16, 24, 20, 20, 20, 14, 18, 12, 16, 16, 20, 16, 20, 24, 24, 22])
-    append_header(users_sheet, ["Telegram ID", "Имя", "Username", "Номер телефона", "Дата регистрации", "AI-запросы", "Успешные запросы", "Ошибки", "Входные токены", "Выходные токены", "Дополнительные токены", "Всего токенов", "Кэшированные токены", "Среднее время ответа, мс", "Оценочная стоимость", "Последняя активность"])
+    set_widths(users_sheet, [16, 24, 20, 20, 20, 14, 18, 12, 16, 16, 20, 16, 20, 24, 24, 22, 22, 22])
+    append_header(users_sheet, ["Telegram ID", "Имя", "Username", "Номер телефона", "Дата регистрации", "AI-запросы", "Успешные запросы", "Ошибки", "Входные токены", "Выходные токены", "Дополнительные токены", "Всего токенов", "Кэшированные токены", "Среднее время ответа, мс", "Оценочная стоимость", "Последняя активность", "Первое обращение к ИИ", "Последнее обращение к ИИ"])
     for row in data.get("users") or []:
-        append_row(users_sheet, [str(row.get("telegram_id", "")), row.get("full_name"), row.get("username"), row.get("phone"), parse_datetime(row.get("registered_at")), row.get("ai_requests"), row.get("successful_requests"), row.get("failed_requests"), row.get("prompt_tokens"), row.get("candidate_tokens"), row.get("thoughts_tokens"), row.get("total_tokens"), row.get("cached_tokens"), row.get("avg_duration_ms"), "Нет достоверного тарифа", parse_datetime(row.get("last_activity_at"))])
+        append_row(users_sheet, [str(row.get("telegram_id", "")), row.get("full_name"), row.get("username"), row.get("phone"), parse_datetime(row.get("registered_at")), row.get("ai_requests"), row.get("successful_requests"), row.get("failed_requests"), row.get("prompt_tokens"), row.get("candidate_tokens"), row.get("thoughts_tokens"), row.get("total_tokens"), row.get("cached_tokens"), row.get("avg_duration_ms"), "Нет достоверного тарифа", parse_datetime(row.get("last_activity_at")), parse_datetime(row.get("first_ai_at")), parse_datetime(row.get("last_ai_at"))])
 
     usage_sheet = workbook.create_sheet("История AI-запросов")
     set_widths(usage_sheet, [38, 16, 22, 20, 14, 18, 18, 22, 18, 22, 20, 24])
