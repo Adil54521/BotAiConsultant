@@ -124,6 +124,15 @@ class GeminiRoutingTests(unittest.TestCase):
         self.assertIn("обратитесь к сотруднику", answer)
         self.assertNotIn("503", answer)
 
+    def test_detailed_usage_uses_provider_total_without_double_counting(self):
+        answer, usage = self.make_client(FakeSession()).ask_ai_detailed("Қазақша білесіңба?")
+        self.assertEqual(answer, "Тестовый ответ")
+        self.assertEqual(usage["promptTokens"], 120)
+        self.assertEqual(usage["candidateTokens"], 20)
+        self.assertEqual(usage["thoughtsTokens"], 8)
+        self.assertEqual(usage["totalTokens"], 148)
+        self.assertNotEqual(usage["totalTokens"], 120 + 20 + 8 + usage["totalTokens"])
+
 
 if __name__ == "__main__":
     unittest.main()

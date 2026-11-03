@@ -12,6 +12,39 @@ const WebSocket = require("ws");
 const path = require("path");
 const { PDFParse } = require("pdf-parse");
 const { createEmbedding } = require("./gemini");
+const {
+    getBotUser,
+    registerBotUser,
+    touchBotUser,
+    recordAiUsage,
+    openSupportRequest,
+    updateSupportRequest,
+    getOverview,
+    getUserStats,
+    getUsageRows,
+    getSupportRows
+} = require("./analytics");
+
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
+
+function isInternalAuthorized(req) {
+    return Boolean(INTERNAL_API_TOKEN) && req.headers["x-internal-token"] === INTERNAL_API_TOKEN;
+}
+
+function readJsonBody(req, maxBytes = 1_000_000) {
+    return new Promise((resolve, reject) => {
+        let body = "";
+        req.on("data", chunk => {
+            body += chunk;
+            if (body.length > maxBytes) reject(new Error("BODY_TOO_LARGE"));
+        });
+        req.on("end", () => {
+            try { resolve(body ? JSON.parse(body) : {}); }
+            catch (error) { reject(new Error("INVALID_JSON")); }
+        });
+        req.on("error", reject);
+    });
+}
 
 async function extractPdfText(filePath) {
 
@@ -91,6 +124,87 @@ const server = route.createServer(async (req, res) => {
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         res.end();
+        return;
+    }
+
+    if (req.url.startsWith("/internal/") && !isInternalAuthorized(req)) {
+        res.writeHead(403, {"Content-Type": "application/json"});
+        res.end(JSON.stringify({error: "Forbidden"}));
+        return;
+    }
+
+    if (req.method === "GET" && req.url.startsWith("/internal/bot-user?")) {
+        try {
+            const url = new URL(req.url, "http://127.0.0.1");
+            const user = await getBotUser(url.searchParams.get("telegramId"));
+            res.end(JSON.stringify({registered: Boolean(user && user.phone_verified), user}));
+        } catch (error) {
+            console.error(`BOT_USER_LOOKUP_ERROR type=${error.constructor.name}`);
+            res.writeHead(500);
+            res.end(JSON.stringify({error: "Server error"}));
+        }
+        return;
+    }
+
+    if (req.method === "POST" && req.url === "/internal/bot-user/register") {
+        try {
+            const user = await registerBotUser(await readJsonBody(req));
+            res.end(JSON.stringify({success: true, user}));
+        } catch (error) {
+            const invalid = error.message === "INVALID_PHONE";
+            console.error(`BOT_USER_REGISTER_ERROR type=${error.constructor.name}`);
+            res.writeHead(invalid ? 400 : 500);
+            res.end(JSON.stringify({success: false, error: invalid ? "Invalid phone" : "Server error"}));
+        }
+        return;
+    }
+
+    if (req.method === "POST" && req.url === "/internal/ai/usage") {
+        try {
+            const result = await recordAiUsage(await readJsonBody(req));
+            res.end(JSON.stringify({success: true, ...result}));
+        } catch (error) {
+            console.error(`AI_USAGE_SAVE_ERROR type=${error.constructor.name}`);
+            res.writeHead(error.message === "USER_NOT_REGISTERED" ? 403 : 500);
+            res.end(JSON.stringify({success: false}));
+        }
+        return;
+    }
+
+    if (req.method === "POST" && req.url === "/internal/support/request") {
+        try {
+            const data = await readJsonBody(req);
+            const result = data.action === "open"
+                ? await openSupportRequest(data.telegramId)
+                : await updateSupportRequest(data.telegramId, data.status);
+            res.end(JSON.stringify({success: true, request: result}));
+        } catch (error) {
+            console.error(`SUPPORT_USAGE_ERROR type=${error.constructor.name}`);
+            res.writeHead(error.message === "USER_NOT_REGISTERED" ? 403 : 500);
+            res.end(JSON.stringify({success: false}));
+        }
+        return;
+    }
+
+    if (req.method === "POST" && req.url === "/internal/admin/analytics") {
+        try {
+            const data = await readJsonBody(req);
+            let result;
+            if (data.action === "overview") result = await getOverview(data.from, data.to);
+            else if (data.action === "users") result = await getUserStats(data.from, data.to, data.search, data.limit, data.offset);
+            else if (data.action === "report") result = {
+                overview: await getOverview(data.from, data.to),
+                users: await getUserStats(data.from, data.to, null, 200000, 0),
+                usage: await getUsageRows(data.from, data.to),
+                support: await getSupportRows(data.from, data.to)
+            };
+            else throw new Error("INVALID_ACTION");
+            res.end(JSON.stringify({success: true, data: result}));
+        } catch (error) {
+            console.error(`ADMIN_ANALYTICS_ERROR type=${error.constructor.name}`);
+            res.writeHead(400);
+            res.end(JSON.stringify({success: false, error: "Invalid request"}));
+        }
         return;
     }
 
@@ -421,6 +535,12 @@ const server = route.createServer(async (req, res) => {
 
     if (req.url === "/message" && req.method === "POST") {
 
+        if (!isInternalAuthorized(req)) {
+            res.writeHead(403, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({error: "Forbidden"}));
+            return;
+        }
+
         let body = "";
 
         req.on("data", chunk => {
@@ -430,6 +550,13 @@ const server = route.createServer(async (req, res) => {
         req.on("end", async () => {
 
             const message = JSON.parse(body);
+
+            const registeredUser = await getBotUser(message.studentId);
+            if (!registeredUser || !registeredUser.phone_verified) {
+                res.writeHead(403, {"Content-Type": "application/json"});
+                res.end(JSON.stringify({message: "Registration required"}));
+                return;
+            }
 
             // Получаем существующий чат или создаем новый
             const chatId = await getOrCreateChat(
@@ -626,6 +753,12 @@ const server = route.createServer(async (req, res) => {
 
     if (req.url === "/consultant-mode" && req.method === "POST") {
 
+        if (!isInternalAuthorized(req)) {
+            res.writeHead(403, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({error: "Forbidden"}));
+            return;
+        }
+
         let body = "";
 
         req.on("data", chunk => {
@@ -635,6 +768,13 @@ const server = route.createServer(async (req, res) => {
         req.on("end", async () => {
             try {
                 const data = JSON.parse(body);
+
+                const registeredUser = await getBotUser(data.studentId);
+                if (!registeredUser || !registeredUser.phone_verified) {
+                    res.writeHead(403, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({message: "Registration required"}));
+                    return;
+                }
 
                 const enabled = data.enabled === true;
 
@@ -952,6 +1092,12 @@ const server = route.createServer(async (req, res) => {
 
     if (req.method === "POST" && req.url === "/ai/message") {
 
+        if (!isInternalAuthorized(req)) {
+            res.writeHead(403, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({error: "Forbidden"}));
+            return;
+        }
+
         let body = "";
 
         req.on("data", chunk => {
@@ -970,6 +1116,13 @@ const server = route.createServer(async (req, res) => {
                     userMessage,
                     assistantMessage
                 } = JSON.parse(body);
+
+                const registeredUser = await getBotUser(telegramId);
+                if (!registeredUser || !registeredUser.phone_verified) {
+                    res.writeHead(403, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({success: false, message: "Registration required"}));
+                    return;
+                }
 
                 let conversation = await getAIConversationByTelegramId(telegramId);
 

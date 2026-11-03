@@ -3,6 +3,8 @@ import logging
 import os
 import re
 import time
+import uuid
+from datetime import datetime, timezone
 from logging.handlers import RotatingFileHandler
 
 import requests
@@ -163,15 +165,17 @@ class Gemini:
         stats = {"route": route, "system_chars": len(SYSTEM_INSTRUCTION), "system_est_tokens": estimate_tokens(SYSTEM_INSTRUCTION), "history_messages": len(history_contents), "history_chars": sum(len(x["parts"][0]["text"]) for x in history_contents), "document_chunks": len(chunks), "document_chars": len(context), "cached_content": bool(payload.get("cachedContent")), "thinking_level": thinking_level, "max_output_tokens": max_output}
         return payload, stats
 
-    def ask_ai(self, user_input, user_meta=None, history=None):
+    def ask_ai_detailed(self, user_input, user_meta=None, history=None):
         started = time.perf_counter()
+        request_id = str(uuid.uuid4())
+        requested_at = datetime.now(timezone.utc).isoformat()
         payload, stats = self.build_request(user_input, history)
         ai_logger.info("AI_REQUEST | meta=%s | stats=%s", json.dumps(user_meta or {}, ensure_ascii=False), json.dumps(stats, ensure_ascii=False))
         try:
             response = self.session.post(f"{self.base_url}/{self.model}:generateContent", headers=self._headers(), json=payload, timeout=60)
             if not response.ok:
                 ai_logger.error("AI_HTTP_ERROR | %s", safe_response_error(response))
-                return "Сейчас не удалось получить ответ ИИ. Попробуйте позже или обратитесь к сотруднику."
+                return "Сейчас не удалось получить ответ ИИ. Попробуйте позже или обратитесь к сотруднику.", self._usage_record(request_id, requested_at, stats, "error", started, error_type=f"HTTP_{response.status_code}")
             data = response.json()
             usage = data.get("usageMetadata", {})
             final_stats = {**stats, "promptTokenCount": usage.get("promptTokenCount", 0), "cachedContentTokenCount": usage.get("cachedContentTokenCount", 0), "thoughtsTokenCount": usage.get("thoughtsTokenCount", 0), "candidatesTokenCount": usage.get("candidatesTokenCount", 0), "totalTokenCount": usage.get("totalTokenCount", 0), "duration_ms": round((time.perf_counter() - started) * 1000)}
@@ -180,16 +184,37 @@ class Gemini:
             if not answer:
                 raise ValueError("empty model response")
             ai_logger.info("AI_RESPONSE | route=%s | chars=%d", stats["route"], len(answer))
-            return answer
+            return answer, self._usage_record(request_id, requested_at, stats, "success", started, usage=usage)
         except requests.Timeout:
             ai_logger.error("AI_ERROR | type=Timeout | route=%s", stats["route"])
-            return "ИИ отвечает дольше обычного. Попробуйте ещё раз или обратитесь к сотруднику."
+            return "ИИ отвечает дольше обычного. Попробуйте ещё раз или обратитесь к сотруднику.", self._usage_record(request_id, requested_at, stats, "error", started, error_type="Timeout")
         except requests.RequestException as error:
             ai_logger.error("AI_ERROR | type=%s | route=%s", type(error).__name__, stats["route"])
-            return "Сервис ИИ временно недоступен. Попробуйте позже или обратитесь к сотруднику."
+            return "Сервис ИИ временно недоступен. Попробуйте позже или обратитесь к сотруднику.", self._usage_record(request_id, requested_at, stats, "error", started, error_type=type(error).__name__)
         except (ValueError, KeyError, IndexError, TypeError) as error:
             ai_logger.error("AI_ERROR | type=%s | route=%s", type(error).__name__, stats["route"])
-            return "Не удалось обработать ответ ИИ. Попробуйте ещё раз или обратитесь к сотруднику."
+            return "Не удалось обработать ответ ИИ. Попробуйте ещё раз или обратитесь к сотруднику.", self._usage_record(request_id, requested_at, stats, "error", started, error_type=type(error).__name__)
+
+    def _usage_record(self, request_id, requested_at, stats, status, started, usage=None, error_type=None):
+        usage = usage or {}
+        return {
+            "requestId": request_id,
+            "requestedAt": requested_at,
+            "model": self.model.removeprefix("models/"),
+            "route": stats["route"],
+            "status": status,
+            "promptTokens": usage.get("promptTokenCount"),
+            "candidateTokens": usage.get("candidatesTokenCount"),
+            "thoughtsTokens": usage.get("thoughtsTokenCount"),
+            "totalTokens": usage.get("totalTokenCount"),
+            "cachedTokens": usage.get("cachedContentTokenCount"),
+            "durationMs": round((time.perf_counter() - started) * 1000),
+            "errorType": error_type,
+        }
+
+    def ask_ai(self, user_input, user_meta=None, history=None):
+        answer, _ = self.ask_ai_detailed(user_input, user_meta, history)
+        return answer
 
 
 if __name__ == "__main__":

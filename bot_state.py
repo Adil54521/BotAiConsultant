@@ -3,6 +3,7 @@ from enum import Enum
 
 
 class UserMode(str, Enum):
+    UNREGISTERED = "unregistered"
     MAIN_MENU = "main_menu"
     AI_CHAT = "ai_chat"
     WAITING_FOR_OPERATOR = "waiting_for_operator"
@@ -29,7 +30,7 @@ CONTROL_BUTTONS = frozenset({
     "Выход",
     "Выход из режима общения с сотрудником",
 })
-CONTROL_COMMANDS = frozenset({"/start", "/menu", "/help", "/cancel"})
+CONTROL_COMMANDS = frozenset({"/start", "/menu", "/help", "/cancel", "/admin", "/admin_period", "/admin_user"})
 
 
 def normalize_command(text):
@@ -40,6 +41,14 @@ def normalize_command(text):
 def is_control_message(text):
     value = (text or "").strip()
     return value in CONTROL_BUTTONS or normalize_command(value) in CONTROL_COMMANDS
+
+
+def is_own_contact(contact_user_id, sender_user_id):
+    return contact_user_id is not None and contact_user_id == sender_user_id
+
+
+def is_admin_id(configured_admin_id, sender_user_id):
+    return configured_admin_id is not None and configured_admin_id == sender_user_id
 
 
 def route_text(mode, text):

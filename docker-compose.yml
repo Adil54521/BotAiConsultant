@@ -12,6 +12,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./backup.sql:/docker-entrypoint-initdb.d/backup.sql:ro 
+      - ./migrations/001_bot_registration_analytics.sql:/docker-entrypoint-initdb.d/002_bot_registration_analytics.sql:ro
 
   api:
     build: .
@@ -23,6 +24,7 @@ services:
       - DB_PORT=5432
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
+      - INTERNAL_API_TOKEN=${INTERNAL_API_TOKEN}
     volumes:
       - ./storage:/usr/src/app/storage
     depends_on:
@@ -38,9 +40,12 @@ services:
       - DB_PASSWORD=admin
       - DB_NAME=postgres
       - DB_PORT=5432
-      - API_URL=http://api:3000
-      - BOT_TOKEN=8682510689:AAERp2ap0MX8c6hDwgIEAbT7fZhUJih22hA
+      - BACKEND_URL=http://api:8004
+      - BACKEND_WS_URL=ws://api:8004
+      - BOT_TOKEN=${BOT_TOKEN}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ADMIN_TELEGRAM_ID=${ADMIN_TELEGRAM_ID}
+      - INTERNAL_API_TOKEN=${INTERNAL_API_TOKEN}
     depends_on:
       - db
       - api
