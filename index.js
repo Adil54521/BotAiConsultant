@@ -133,6 +133,15 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
+    if (req.method === "GET" && req.url === "/internal/health") {
+        res.end(JSON.stringify({
+            service: "bot-backend",
+            apiVersion: 2,
+            schemaTarget: "chats-messages-v1"
+        }));
+        return;
+    }
+
     if (req.method === "GET" && req.url.startsWith("/internal/bot-user?")) {
         try {
             const url = new URL(req.url, "http://127.0.0.1");
@@ -151,7 +160,7 @@ const server = route.createServer(async (req, res) => {
             const user = await registerBotUser(await readJsonBody(req));
             res.end(JSON.stringify({success: true, user}));
         } catch (error) {
-            const invalid = error.message === "INVALID_PHONE";
+            const invalid = ["INVALID_PHONE", "INVALID_TELEGRAM_ID"].includes(error.message);
             console.error(`BOT_USER_REGISTER_ERROR type=${error.constructor.name}`);
             res.writeHead(invalid ? 400 : 500);
             res.end(JSON.stringify({success: false, error: invalid ? "Invalid phone" : "Server error"}));

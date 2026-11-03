@@ -219,18 +219,31 @@ async function deleteDocument(id) {
     );
 }
 
+async function hasLegacyAIStorage() {
+    const result = await pool.query(`
+        SELECT to_regclass('public.ai_conversations') IS NOT NULL
+           AND to_regclass('public.ai_messages') IS NOT NULL AS available
+    `);
+    return Boolean(result.rows[0] && result.rows[0].available);
+}
+
 async function getAIConversations() {
 
+    if (await hasLegacyAIStorage()) {
+        const legacy = await pool.query(`
+            SELECT id, telegram_id, username, full_name, updated_at, phone
+            FROM ai_conversations
+            ORDER BY updated_at DESC
+        `);
+        return legacy.rows;
+    }
+
     const result = await pool.query(`
-        SELECT
-            id,
-            telegram_id,
-            username,
-            full_name,
-            updated_at,
-            phone
-        FROM ai_conversations
-        ORDER BY updated_at DESC
+        SELECT c.id, c.student_id AS telegram_id, c.username,
+               c.student_name AS full_name, c.last_activity_at AS updated_at, c.phone
+        FROM chats c
+        WHERE EXISTS (SELECT 1 FROM messages m WHERE m.chat_id=c.id AND m.message_type IN ('ai_user','ai_assistant'))
+        ORDER BY c.last_activity_at DESC NULLS LAST
     `);
 
     return result.rows;
@@ -238,13 +251,27 @@ async function getAIConversations() {
 
 async function getAIConversationMessages(id) {
 
+    if (await hasLegacyAIStorage()) {
+        const legacy = await pool.query(`
+            SELECT role, message, created_at
+            FROM ai_messages
+            WHERE conversation_id = $1
+            ORDER BY created_at ASC
+        `, [id]);
+        return legacy.rows;
+    }
+
     const result = await pool.query(`
         SELECT
             role,
             message,
             created_at
-        FROM ai_messages
-        WHERE conversation_id = $1
+        FROM (
+            SELECT CASE WHEN sender='student' THEN 'user' ELSE 'assistant' END AS role,
+                   text AS message, created_at
+            FROM messages
+            WHERE chat_id = $1 AND message_type IN ('ai_user','ai_assistant')
+        ) ai_messages
         ORDER BY created_at ASC
     `, [id]);
 
@@ -253,10 +280,20 @@ async function getAIConversationMessages(id) {
 
 async function getAIConversationByTelegramId(telegramId) {
 
+    if (await hasLegacyAIStorage()) {
+        const legacy = await pool.query(`
+            SELECT * FROM ai_conversations
+            WHERE telegram_id = $1
+            LIMIT 1
+        `, [telegramId]);
+        return legacy.rows[0];
+    }
+
     const result = await pool.query(`
-        SELECT *
-        FROM ai_conversations
-        WHERE telegram_id = $1
+        SELECT id, student_id AS telegram_id, username,
+               student_name AS full_name, phone, created_at, last_activity_at AS updated_at
+        FROM chats
+        WHERE student_id = $1
         LIMIT 1
     `, [telegramId]);
 
@@ -264,47 +301,51 @@ async function getAIConversationByTelegramId(telegramId) {
 }
 
 async function createAIConversation(telegramId, username, fullName, phone) {
-
-    const result = await pool.query(`
-        INSERT INTO ai_conversations (
-            telegram_id,
-            username,
-            full_name,
-            phone
-        )
-        VALUES ($1, $2, $3, $4)
-        RETURNING *
-    `, [
-        telegramId,
-        username,
-        fullName,
-        phone
-    ]);
-
-    return result.rows[0];
+    if (await hasLegacyAIStorage()) {
+        const legacy = await pool.query(`
+            INSERT INTO ai_conversations (telegram_id, username, full_name, phone)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (telegram_id) DO UPDATE SET
+                username=EXCLUDED.username,
+                full_name=EXCLUDED.full_name,
+                phone=EXCLUDED.phone,
+                updated_at=now()
+            RETURNING *
+        `, [telegramId, username, fullName, phone]);
+        return legacy.rows[0];
+    }
+    await getOrCreateChat(telegramId, fullName || username, phone);
+    return getAIConversationByTelegramId(telegramId);
 }
 
 async function saveAIMessage(conversationId, role, message) {
-
+    if (await hasLegacyAIStorage()) {
+        await pool.query(`
+            INSERT INTO ai_messages (conversation_id, role, message)
+            VALUES ($1, $2, $3)
+        `, [conversationId, role, message]);
+        return;
+    }
+    const sender = role === "user" ? "student" : "assistant";
+    const messageType = role === "user" ? "ai_user" : "ai_assistant";
     await pool.query(`
-        INSERT INTO ai_messages (
-            conversation_id,
-            role,
-            message
-        )
-        VALUES ($1, $2, $3)
-    `, [
-        conversationId,
-        role,
-        message
-    ]);
+        INSERT INTO messages(chat_id, sender, text, message_type)
+        VALUES ($1, $2, $3, $4)
+    `, [conversationId, sender, message, messageType]);
 }
 
 async function updateAIConversation(conversationId) {
 
+    if (await hasLegacyAIStorage()) {
+        await pool.query(`
+            UPDATE ai_conversations SET updated_at=now() WHERE id=$1
+        `, [conversationId]);
+        return;
+    }
+
     await pool.query(`
-        UPDATE ai_conversations
-        SET updated_at = NOW()
+        UPDATE chats
+        SET last_activity_at = NOW()
         WHERE id = $1
     `, [conversationId]);
 }

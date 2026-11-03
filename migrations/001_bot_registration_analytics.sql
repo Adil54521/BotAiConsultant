@@ -1,56 +1,47 @@
 BEGIN;
 
-ALTER TABLE ai_conversations
-    ADD COLUMN IF NOT EXISTS phone_verified boolean NOT NULL DEFAULT false,
+-- Extend the existing Telegram user/chat table. No parallel user table is created.
+ALTER TABLE chats
+    ADD COLUMN IF NOT EXISTS username text,
     ADD COLUMN IF NOT EXISTS first_name text,
     ADD COLUMN IF NOT EXISTS last_name text,
-    ADD COLUMN IF NOT EXISTS registered_at timestamptz,
+    ADD COLUMN IF NOT EXISTS phone_verified boolean NOT NULL DEFAULT false,
     ADD COLUMN IF NOT EXISTS last_activity_at timestamptz;
 
-CREATE INDEX IF NOT EXISTS idx_ai_conversations_registered_at
-    ON ai_conversations (registered_at);
-CREATE INDEX IF NOT EXISTS idx_ai_conversations_last_activity_at
-    ON ai_conversations (last_activity_at);
-CREATE INDEX IF NOT EXISTS idx_ai_conversations_phone
-    ON ai_conversations (phone);
+-- Existing rows with a stored phone were registered before this flag existed.
+UPDATE chats
+SET phone_verified = true
+WHERE phone IS NOT NULL
+  AND btrim(phone) <> ''
+  AND phone_verified = false;
 
-CREATE TABLE IF NOT EXISTS ai_usage_events (
-    request_id uuid PRIMARY KEY,
-    conversation_id integer NOT NULL REFERENCES ai_conversations(id) ON DELETE CASCADE,
-    requested_at timestamptz NOT NULL DEFAULT now(),
-    model text NOT NULL,
-    route text,
-    status text NOT NULL CHECK (status IN ('success', 'error', 'ignored')),
-    prompt_tokens integer,
-    candidate_tokens integer,
-    thoughts_tokens integer,
-    total_tokens integer,
-    cached_tokens integer,
-    duration_ms integer NOT NULL CHECK (duration_ms >= 0),
-    error_type text,
-    created_at timestamptz NOT NULL DEFAULT now()
-);
+CREATE INDEX IF NOT EXISTS idx_chats_phone ON chats (phone);
+CREATE INDEX IF NOT EXISTS idx_chats_created_at ON chats (created_at);
+CREATE INDEX IF NOT EXISTS idx_chats_last_activity_at ON chats (last_activity_at);
 
-CREATE INDEX IF NOT EXISTS idx_ai_usage_requested_at
-    ON ai_usage_events (requested_at);
-CREATE INDEX IF NOT EXISTS idx_ai_usage_conversation_date
-    ON ai_usage_events (conversation_id, requested_at);
-CREATE INDEX IF NOT EXISTS idx_ai_usage_status_date
-    ON ai_usage_events (status, requested_at);
+-- Store AI/support metadata beside the existing conversation messages.
+ALTER TABLE messages
+    ADD COLUMN IF NOT EXISTS sent_to_bot boolean NOT NULL DEFAULT false,
+    ADD COLUMN IF NOT EXISTS message_type text NOT NULL DEFAULT 'support_message',
+    ADD COLUMN IF NOT EXISTS request_id uuid,
+    ADD COLUMN IF NOT EXISTS model text,
+    ADD COLUMN IF NOT EXISTS route text,
+    ADD COLUMN IF NOT EXISTS status text,
+    ADD COLUMN IF NOT EXISTS prompt_tokens integer,
+    ADD COLUMN IF NOT EXISTS candidate_tokens integer,
+    ADD COLUMN IF NOT EXISTS thoughts_tokens integer,
+    ADD COLUMN IF NOT EXISTS total_tokens integer,
+    ADD COLUMN IF NOT EXISTS cached_tokens integer,
+    ADD COLUMN IF NOT EXISTS duration_ms integer,
+    ADD COLUMN IF NOT EXISTS error_type text;
 
-CREATE TABLE IF NOT EXISTS support_requests (
-    id bigserial PRIMARY KEY,
-    conversation_id integer NOT NULL REFERENCES ai_conversations(id) ON DELETE CASCADE,
-    opened_at timestamptz NOT NULL DEFAULT now(),
-    operator_connected_at timestamptz,
-    closed_at timestamptz,
-    status text NOT NULL DEFAULT 'waiting'
-        CHECK (status IN ('waiting', 'active', 'closed', 'failed'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_support_requests_opened_at
-    ON support_requests (opened_at);
-CREATE INDEX IF NOT EXISTS idx_support_requests_conversation_date
-    ON support_requests (conversation_id, opened_at);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_messages_request_id
+    ON messages (request_id) WHERE request_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_messages_chat_date
+    ON messages (chat_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_messages_type_date
+    ON messages (message_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_messages_status_date
+    ON messages (status, created_at) WHERE status IS NOT NULL;
 
 COMMIT;

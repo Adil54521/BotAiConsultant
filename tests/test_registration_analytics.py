@@ -37,11 +37,33 @@ class RegistrationAndAdminTests(unittest.TestCase):
         self.assertEqual(end.isoformat(), "2026-11-03T19:00:00+00:00")
         self.assertEqual(label, "03.11.2026–03.11.2026")
 
-    def test_migration_has_persistent_idempotent_usage_storage(self):
+    def test_migration_extends_existing_tables_without_duplicates(self):
         migration = Path("migrations/001_bot_registration_analytics.sql").read_text(encoding="utf-8")
-        self.assertIn("CREATE TABLE IF NOT EXISTS ai_usage_events", migration)
-        self.assertIn("request_id uuid PRIMARY KEY", migration)
-        self.assertIn("CREATE INDEX IF NOT EXISTS idx_ai_usage_conversation_date", migration)
+        self.assertIn("ALTER TABLE chats", migration)
+        self.assertIn("ALTER TABLE messages", migration)
+        self.assertIn("CREATE UNIQUE INDEX IF NOT EXISTS uq_messages_request_id", migration)
+        self.assertNotIn("CREATE TABLE", migration)
+        self.assertNotIn("ai_conversations", migration)
+
+    def test_backend_uses_live_chat_and_message_schema(self):
+        analytics = Path("analytics.js").read_text(encoding="utf-8")
+        chat = Path("chat.js").read_text(encoding="utf-8")
+        self.assertIn("INSERT INTO chats", analytics)
+        self.assertIn("INSERT INTO messages", analytics)
+        self.assertNotIn("FROM ai_usage_events", analytics)
+        self.assertNotIn("FROM support_requests", analytics)
+        self.assertIn("to_regclass('public.ai_conversations')", chat)
+        self.assertIn("FROM ai_conversations", chat)
+        self.assertIn("FROM chats", chat)
+
+    def test_backend_registration_contract_and_port_are_explicit(self):
+        backend = Path("index.js").read_text(encoding="utf-8")
+        compose = Path("docker-compose.yml").read_text(encoding="utf-8")
+        nginx = Path("nginx.conf").read_text(encoding="utf-8")
+        self.assertIn('req.method === "POST" && req.url === "/internal/bot-user/register"', backend)
+        self.assertIn('req.url === "/internal/health"', backend)
+        self.assertIn("PORT=8004", compose)
+        self.assertNotIn("api:8000", nginx)
 
 
 class ExcelReportTests(unittest.TestCase):

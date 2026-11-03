@@ -44,8 +44,8 @@ logger = logging.getLogger(__name__)
 
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 TOKEN = os.getenv("BOT_TOKEN")
-BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8004")
-BACKEND_WS_URL = os.getenv("BACKEND_WS_URL", "ws://127.0.0.1:8004")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8004").rstrip("/")
+BACKEND_WS_URL = os.getenv("BACKEND_WS_URL", "ws://127.0.0.1:8004").rstrip("/")
 INTERNAL_API_TOKEN = os.getenv("INTERNAL_API_TOKEN")
 try:
     ADMIN_TELEGRAM_ID = int(os.getenv("ADMIN_TELEGRAM_ID", ""))
@@ -160,7 +160,13 @@ async def backend_post(path, payload):
         ) as response:
             text = await response.text()
             if response.status >= 400:
-                logger.error("BACKEND_ERROR | path=%s | status=%d", path, response.status)
+                error_hint = " ".join(text[:160].splitlines())
+                logger.error(
+                    "BACKEND_ERROR | path=%s | status=%d | body_hint=%r",
+                    path,
+                    response.status,
+                    error_hint,
+                )
                 return False, ""
             return True, text
     except (aiohttp.ClientError, asyncio.TimeoutError) as error:
@@ -177,7 +183,13 @@ async def backend_get(path):
             timeout=aiohttp.ClientTimeout(total=12),
         ) as response:
             if response.status >= 400:
-                logger.error("BACKEND_ERROR | path=%s | status=%d", path.split("?")[0], response.status)
+                error_hint = " ".join((await response.text())[:160].splitlines())
+                logger.error(
+                    "BACKEND_ERROR | path=%s | status=%d | body_hint=%r",
+                    path.split("?")[0],
+                    response.status,
+                    error_hint,
+                )
                 return False, None
             return True, await response.json()
     except (aiohttp.ClientError, asyncio.TimeoutError, ValueError) as error:
@@ -188,6 +200,29 @@ async def backend_get(path):
 async def get_registration(user_id):
     ok, payload = await backend_get(f"/internal/bot-user?telegramId={user_id}")
     return bool(ok and payload and payload.get("registered")), (payload or {}).get("user")
+
+
+async def check_backend_contract():
+    ok, payload = await backend_get("/internal/health")
+    if not ok or not payload:
+        logger.critical(
+            "BACKEND_CONTRACT_ERROR | expected_api_version=2 | backend_url=%s",
+            BACKEND_URL,
+        )
+        return False
+    compatible = payload.get("service") == "bot-backend" and payload.get("apiVersion") == 2
+    if not compatible:
+        logger.critical(
+            "BACKEND_CONTRACT_ERROR | expected_api_version=2 | actual_api_version=%r",
+            payload.get("apiVersion"),
+        )
+    else:
+        logger.info(
+            "BACKEND_READY | api_version=%s | schema_target=%s",
+            payload.get("apiVersion"),
+            payload.get("schemaTarget"),
+        )
+    return compatible
 
 
 async def prompt_registration(message, state):
@@ -646,6 +681,7 @@ async def websocket_listener():
 async def main():
     global backend_session
     backend_session = aiohttp.ClientSession()
+    await check_backend_contract()
     websocket_task = asyncio.create_task(websocket_listener())
     try:
         await dp.start_polling(bot)

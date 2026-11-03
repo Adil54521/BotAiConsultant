@@ -22,9 +22,12 @@ services:
       - DB_PASSWORD=admin
       - DB_NAME=postgres
       - DB_PORT=5432
+      - PORT=8004
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
       - INTERNAL_API_TOKEN=${INTERNAL_API_TOKEN}
+    ports:
+      - "8004:8004"
     volumes:
       - ./storage:/usr/src/app/storage
     depends_on:
