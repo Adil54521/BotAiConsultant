@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+config.env
+*.log
+*.log.*
+project.tar.gz
+backup.sql
+myvenv
+node_modules
+__pycache__
+*.pyc
+.uv-cache
+.uv-python
+.idea
+tests

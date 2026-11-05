@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 import requests
 
+os.environ.setdefault("AI_USAGE_LOG_DISABLED", "1")
 import ai_service
 
 
@@ -46,9 +47,19 @@ class FakeSession:
         })
 
 
+class SequenceSession(FakeSession):
+    def __init__(self, responses):
+        super().__init__()
+        self.responses = list(responses)
+
+    def post(self, url, **kwargs):
+        self.calls.append((url, kwargs))
+        return self.responses.pop(0)
+
+
 class GeminiRoutingTests(unittest.TestCase):
     def make_client(self, session=None):
-        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key", "INTERNAL_API_TOKEN": "test-internal-token"}):
             return ai_service.Gemini(session=session or FakeSession())
 
     def test_simple_chat_has_no_search_documents_or_cache(self):
@@ -60,6 +71,11 @@ class GeminiRoutingTests(unittest.TestCase):
         self.assertNotIn("tools", payload)
         self.assertEqual(session.calls, [])
         self.assertLess(ai_service.estimate_tokens(json.dumps(payload, ensure_ascii=False)), 300)
+
+    def test_constructing_client_does_not_call_gemini(self):
+        session = FakeSession()
+        self.make_client(session)
+        self.assertEqual(session.calls, [])
 
     def test_internal_question_uses_only_relevant_chunks(self):
         chunks = [
@@ -73,6 +89,7 @@ class GeminiRoutingTests(unittest.TestCase):
         self.assertFalse(stats["cached_content"])
         self.assertEqual(len(session.calls), 1)
         self.assertIn("Релевантный фрагмент", payload["contents"][-1]["parts"][0]["text"])
+        self.assertIn("x-internal-token", session.calls[0][1]["headers"])
 
     def test_current_question_enables_google_search_only(self):
         session = FakeSession()
@@ -123,6 +140,35 @@ class GeminiRoutingTests(unittest.TestCase):
         answer = self.make_client(session).ask_ai("Қазақша білесіңба?")
         self.assertIn("обратитесь к сотруднику", answer)
         self.assertNotIn("503", answer)
+
+    def test_transient_error_has_one_bounded_retry_when_enabled(self):
+        session = SequenceSession([
+            FakeResponse(status=503, payload={"error": {"message": "unavailable"}}),
+            FakeResponse(payload={
+                "candidates": [{"content": {"parts": [{"text": "После повтора"}]}}],
+                "usageMetadata": {"promptTokenCount": 10, "candidatesTokenCount": 2, "totalTokenCount": 12},
+            }),
+        ])
+        with patch.object(ai_service, "MAX_ATTEMPTS", 2), patch("ai_service.time.sleep"):
+            answer, usage = self.make_client(session).ask_ai_detailed("Привет")
+        self.assertEqual(answer, "После повтора")
+        self.assertEqual(len(session.calls), 2)
+        self.assertEqual(usage["retryCount"], 1)
+
+    def test_permanent_error_is_never_retried(self):
+        session = SequenceSession([FakeResponse(status=403, payload={"error": {"message": "forbidden"}})])
+        with patch.object(ai_service, "MAX_ATTEMPTS", 2), patch("ai_service.time.sleep"):
+            self.make_client(session).ask_ai_detailed("Привет")
+        self.assertEqual(len(session.calls), 1)
+
+    def test_estimated_cost_uses_cached_and_thinking_semantics(self):
+        cost = ai_service.estimate_cost_usd({
+            "promptTokenCount": 1000,
+            "cachedContentTokenCount": 400,
+            "candidatesTokenCount": 200,
+            "thoughtsTokenCount": 100,
+        }, search_query_count=1)
+        self.assertAlmostEqual(cost, 0.014942, places=8)
 
     def test_detailed_usage_uses_provider_total_without_double_counting(self):
         answer, usage = self.make_client(FakeSession()).ask_ai_detailed("Қазақша білесіңба?")

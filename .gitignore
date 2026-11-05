@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 .uv-cache/
 .uv-python/
+ai_usage.log*
+server.log*
+project.tar.gz

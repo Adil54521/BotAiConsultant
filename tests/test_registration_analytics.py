@@ -86,13 +86,35 @@ class RegistrationAndAdminTests(unittest.TestCase):
         self.assertIn("PORT=8004", compose)
         self.assertNotIn("api:8000", nginx)
 
+    def test_paid_embedding_endpoints_and_static_secrets_are_protected(self):
+        backend = Path("index.js").read_text(encoding="utf-8")
+        nginx = Path("nginx.conf").read_text(encoding="utf-8")
+        compose = Path("docker-compose.yml").read_text(encoding="utf-8")
+        dockerignore = Path(".dockerignore").read_text(encoding="utf-8")
+        search_handler = backend[backend.index('if (req.url === "/search"'):]
+        self.assertIn("isInternalAuthorized(req)", search_handler[:1200])
+        upload_handler = backend[backend.index('if (req.url === "/ai"'):]
+        self.assertIn("isAdminSession(req)", upload_handler[:500])
+        self.assertIn("location = /", nginx)
+        self.assertIn("location / {\n            return 404;", nginx)
+        self.assertNotIn("- .:/usr/share/nginx/html:ro", compose)
+        self.assertIn("./account.html:/usr/share/nginx/html/account.html:ro", compose)
+        self.assertIn(".env", dockerignore)
+        self.assertIn("project.tar.gz", dockerignore)
+
+    def test_manual_migration_extends_messages_for_cost_audit_without_new_table(self):
+        migration = Path("migrations/manual_messages_analytics.sql").read_text(encoding="utf-8")
+        for column in ("source", "telegram_message_id", "retry_count", "estimated_cost_usd", "pricing_effective_date"):
+            self.assertIn(column, migration)
+        self.assertNotIn("CREATE TABLE", migration)
+
 
 class ExcelReportTests(unittest.TestCase):
     def test_report_contains_four_required_sheets_and_user_metrics(self):
         data = {
-            "overview": {"registered_users": "1", "ai_requests": "1", "tracking_started_at": "2026-11-01T00:00:00Z"},
-            "users": [{"telegram_id": 123, "full_name": "Test User", "username": "=FORMULA", "phone": "+77000000000", "registered_at": "2026-11-01T00:00:00Z", "ai_requests": 1, "successful_requests": 1, "failed_requests": 0, "prompt_tokens": 100, "candidate_tokens": 20, "thoughts_tokens": 5, "total_tokens": 125, "cached_tokens": 0, "avg_duration_ms": 500, "last_activity_at": "2026-11-02T00:00:00Z"}],
-            "usage": [{"request_id": "00000000-0000-0000-0000-000000000001", "telegram_id": 123, "requested_at": "2026-11-02T00:00:00Z", "model": "gemini-test", "status": "success", "prompt_tokens": 100, "candidate_tokens": 20, "thoughts_tokens": 5, "total_tokens": 125, "cached_tokens": 0, "duration_ms": 500}],
+            "overview": {"registered_users": "1", "ai_requests": "1", "estimated_cost_usd": "0.001", "tracking_started_at": "2026-11-01T00:00:00Z"},
+            "users": [{"telegram_id": 123, "full_name": "Test User", "username": "=FORMULA", "phone": "+77000000000", "registered_at": "2026-11-01T00:00:00Z", "ai_requests": 1, "successful_requests": 1, "failed_requests": 0, "prompt_tokens": 100, "candidate_tokens": 20, "thoughts_tokens": 5, "total_tokens": 125, "cached_tokens": 0, "estimated_cost_usd": 0.001, "avg_duration_ms": 500, "last_activity_at": "2026-11-02T00:00:00Z"}],
+            "usage": [{"request_id": "00000000-0000-0000-0000-000000000001", "telegram_id": 123, "requested_at": "2026-11-02T00:00:00Z", "model": "gemini-test", "status": "success", "prompt_tokens": 100, "candidate_tokens": 20, "thoughts_tokens": 5, "total_tokens": 125, "cached_tokens": 0, "estimated_cost_usd": 0.001, "source": "telegram", "telegram_message_id": "55", "retry_count": 0, "duration_ms": 500}],
             "support": [],
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -105,6 +127,7 @@ class ExcelReportTests(unittest.TestCase):
                 self.assertEqual(users["A2"].value, "123")
                 self.assertEqual(users["C2"].value, "'=FORMULA")
                 self.assertEqual(users["L2"].value, 125)
+                self.assertEqual(users["O2"].value, 0.001)
                 self.assertEqual(users.freeze_panes, "A2")
             finally:
                 workbook.close()
@@ -129,7 +152,7 @@ class ExcelReportTests(unittest.TestCase):
                 overview = workbook["Общая статистика"]
                 values = {overview.cell(row=row, column=1).value: overview.cell(row=row, column=2).value
                           for row in range(5, overview.max_row + 1)}
-                self.assertEqual(values["Всего токенов"], "0")
+                self.assertEqual(values["Всего токенов"], 0)
             finally:
                 workbook.close()
 

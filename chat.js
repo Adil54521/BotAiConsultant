@@ -79,7 +79,7 @@ async function setConsultantMode(studentId, enabled) {
 
 async function searchChunks(question, limit = 5) {
     // Получаем embedding вопроса
-    const embedding = await createEmbedding(question);
+    const embedding = await createEmbedding(question, {source: "retrieval"});
 
     // Преобразуем массив в формат pgvector
     const vector = `[${embedding.join(",")}]`;

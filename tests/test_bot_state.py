@@ -8,6 +8,7 @@ from bot_state import (
     ModeCoordinator,
     UserMode,
     route_text,
+    telegram_request_id,
 )
 
 
@@ -77,6 +78,11 @@ class BotModeTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_unknown_state_falls_back_to_menu(self):
         self.assertEqual(route_text("corrupted", "hello"), "menu")
+
+    async def test_telegram_message_id_is_stable_for_cross_instance_deduplication(self):
+        first = telegram_request_id(100, 55)
+        self.assertEqual(first, telegram_request_id(100, 55))
+        self.assertNotEqual(first, telegram_request_id(100, 56))
 
 
 if __name__ == "__main__":

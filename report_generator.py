@@ -27,6 +27,18 @@ def parse_datetime(value):
         return safe_excel_value(str(value))
 
 
+def parse_number(value):
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    try:
+        number = float(value)
+        return int(number) if number.is_integer() else number
+    except (TypeError, ValueError):
+        return value
+
+
 def append_header(sheet, labels, row_number=1):
     sheet.freeze_panes = f"A{row_number + 1}"
     sheet.auto_filter.ref = f"A{row_number}:{chr(64 + min(len(labels), 26))}1048576"
@@ -76,25 +88,29 @@ def build_usage_report(data, period_label, output_path):
         ("Входные токены", "prompt_tokens"), ("Выходные токены", "candidate_tokens"),
         ("Thinking-токены", "thoughts_tokens"), ("Кэшированные токены", "cached_tokens"),
         ("Всего токенов", "total_tokens"), ("Среднее токенов на запрос", "avg_tokens"),
+        ("Оценочная стоимость, USD", "estimated_cost_usd"),
+        ("Средняя оценочная стоимость запроса, USD", "avg_estimated_cost_usd"),
+        ("Внутренние/фоновые AI-запросы", "non_user_requests"),
+        ("Запросы с неизвестным источником", "unknown_source_requests"),
         ("Общее время ИИ, мс", "total_duration_ms"), ("Среднее время ИИ, мс", "avg_duration_ms"),
         ("Обращения к сотрудникам", "support_requests"), ("Пользователи поддержки", "support_users"),
         ("Начало достоверного учета", "tracking_started_at"),
     ]
     for label, key in labels:
-        value = parse_datetime(overview.get(key)) if key == "tracking_started_at" else overview.get(key)
+        value = parse_datetime(overview.get(key)) if key == "tracking_started_at" else parse_number(overview.get(key))
         append_row(overview_sheet, [label, value if value is not None else "Нет данных"])
 
     users_sheet = workbook.create_sheet("Статистика пользователей")
     set_widths(users_sheet, [16, 24, 20, 20, 20, 14, 18, 12, 16, 16, 20, 16, 20, 24, 24, 22, 22, 22])
     append_header(users_sheet, ["Telegram ID", "Имя", "Username", "Номер телефона", "Дата регистрации", "AI-запросы", "Успешные запросы", "Ошибки", "Входные токены", "Выходные токены", "Дополнительные токены", "Всего токенов", "Кэшированные токены", "Среднее время ответа, мс", "Оценочная стоимость", "Последняя активность", "Первое обращение к ИИ", "Последнее обращение к ИИ"])
     for row in data.get("users") or []:
-        append_row(users_sheet, [str(row.get("telegram_id", "")), row.get("full_name"), row.get("username"), row.get("phone"), parse_datetime(row.get("registered_at")), row.get("ai_requests"), row.get("successful_requests"), row.get("failed_requests"), row.get("prompt_tokens"), row.get("candidate_tokens"), row.get("thoughts_tokens"), row.get("total_tokens"), row.get("cached_tokens"), row.get("avg_duration_ms"), "Нет достоверного тарифа", parse_datetime(row.get("last_activity_at")), parse_datetime(row.get("first_ai_at")), parse_datetime(row.get("last_ai_at"))])
+        append_row(users_sheet, [str(row.get("telegram_id", "")), row.get("full_name"), row.get("username"), row.get("phone"), parse_datetime(row.get("registered_at")), *[parse_number(row.get(key)) for key in ("ai_requests", "successful_requests", "failed_requests", "prompt_tokens", "candidate_tokens", "thoughts_tokens", "total_tokens", "cached_tokens", "avg_duration_ms")], parse_number(row.get("estimated_cost_usd")) if row.get("estimated_cost_usd") is not None else "Нет данных", parse_datetime(row.get("last_activity_at")), parse_datetime(row.get("first_ai_at")), parse_datetime(row.get("last_ai_at"))])
 
     usage_sheet = workbook.create_sheet("История AI-запросов")
-    set_widths(usage_sheet, [38, 16, 22, 20, 14, 18, 18, 22, 18, 22, 20, 24])
-    append_header(usage_sheet, ["ID запроса", "Telegram ID", "Дата и время (UTC)", "Модель", "Статус", "Входные токены", "Выходные токены", "Дополнительные токены", "Всего токенов", "Кэшированные токены", "Время ответа, мс", "Оценочная стоимость"])
+    set_widths(usage_sheet, [38, 16, 22, 20, 14, 18, 18, 22, 18, 22, 20, 24, 16, 20, 14, 20, 20])
+    append_header(usage_sheet, ["ID запроса", "Telegram ID", "Дата и время (UTC)", "Модель", "Статус", "Входные токены", "Выходные токены", "Дополнительные токены", "Всего токенов", "Кэшированные токены", "Время ответа, мс", "Оценочная стоимость, USD", "Источник", "Telegram message ID", "Повторы", "Поисковые запросы", "Версия тарифа"])
     for row in data.get("usage") or []:
-        append_row(usage_sheet, [str(row.get("request_id", "")), str(row.get("telegram_id", "")), parse_datetime(row.get("requested_at")), row.get("model"), row.get("status"), row.get("prompt_tokens"), row.get("candidate_tokens"), row.get("thoughts_tokens"), row.get("total_tokens"), row.get("cached_tokens"), row.get("duration_ms"), "Нет достоверного тарифа"])
+        append_row(usage_sheet, [str(row.get("request_id", "")), str(row.get("telegram_id", "")), parse_datetime(row.get("requested_at")), row.get("model"), row.get("status"), *[parse_number(row.get(key)) for key in ("prompt_tokens", "candidate_tokens", "thoughts_tokens", "total_tokens", "cached_tokens", "duration_ms")], parse_number(row.get("estimated_cost_usd")) if row.get("estimated_cost_usd") is not None else "Нет данных", row.get("source") or "unknown", str(row.get("telegram_message_id") or ""), parse_number(row.get("retry_count")), parse_number(row.get("search_query_count")), row.get("pricing_effective_date")])
 
     support_sheet = workbook.create_sheet("Обращения к сотрудникам")
     set_widths(support_sheet, [16, 16, 22, 26, 22, 14, 22, 24])

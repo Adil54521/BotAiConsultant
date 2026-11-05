@@ -21,6 +21,7 @@ const {
     getBotUser,
     registerBotUser,
     touchBotUser,
+    claimAiRequest,
     recordAiUsage,
     openSupportRequest,
     updateSupportRequest,
@@ -33,10 +34,87 @@ const {
 const internalAuth = resolveInternalToken(process.env.INTERNAL_API_TOKEN, process.env.JWT_SECRET);
 const INTERNAL_API_TOKEN = internalAuth.token;
 const ADMIN_TELEGRAM_ID = String(process.env.ADMIN_TELEGRAM_ID || "").trim();
+const JWT_SECRET = String(process.env.JWT_SECRET || "").trim();
 console.log(`INTERNAL_AUTH_CONFIG scheme=${internalAuth.scheme} secret_present=${Boolean(INTERNAL_API_TOKEN)}`);
+console.log(`SESSION_AUTH_CONFIG secret_present=${Boolean(JWT_SECRET)}`);
+
+function envNumber(name, fallback, minimum, maximum) {
+    const value = Number(process.env[name]);
+    return Number.isFinite(value) ? Math.min(Math.max(value, minimum), maximum) : fallback;
+}
+
+const AI_LIMITS = Object.freeze({
+    timezone: process.env.APP_TIMEZONE || "Asia/Qyzylorda",
+    perUserPerMinute: envNumber("AI_PER_USER_REQUESTS_PER_MINUTE", 4, 1, 60),
+    globalPerMinute: envNumber("AI_GLOBAL_REQUESTS_PER_MINUTE", 20, 1, 1000),
+    maxConcurrent: envNumber("AI_MAX_CONCURRENT_REQUESTS", 3, 1, 100),
+    dailyRequestLimit: envNumber("AI_DAILY_REQUEST_LIMIT", 100, 1, 1000000),
+    dailyCostLimitUsd: envNumber("AI_DAILY_COST_LIMIT_USD", 5, 0.01, 1000000),
+    pendingReserveUsd: envNumber("AI_PENDING_RESERVE_USD", 0.02, 0.0001, 1000),
+    pendingTimeoutSeconds: envNumber("AI_PENDING_TIMEOUT_SECONDS", 180, 30, 3600),
+    inputRate: envNumber("GEMINI_INPUT_USD_PER_MILLION", 0.30, 0, 1000),
+    cachedRate: envNumber("GEMINI_CACHED_INPUT_USD_PER_MILLION", 0.03, 0, 1000),
+    outputRate: envNumber("GEMINI_OUTPUT_USD_PER_MILLION", 2.50, 0, 1000),
+    searchRate: envNumber("GEMINI_SEARCH_USD_PER_QUERY", 0.014, 0, 100),
+});
+console.log(`AI_COST_GUARD daily_limit_usd=${AI_LIMITS.dailyCostLimitUsd} daily_requests=${AI_LIMITS.dailyRequestLimit} global_rpm=${AI_LIMITS.globalPerMinute} user_rpm=${AI_LIMITS.perUserPerMinute} max_concurrent=${AI_LIMITS.maxConcurrent}`);
 
 function isInternalAuthorized(req) {
     return verifyInternalRequest(req, INTERNAL_API_TOKEN);
+}
+
+function sessionPayload(req) {
+    if (!JWT_SECRET) return null;
+    const cookies = String(req.headers.cookie || "");
+    const token = cookies.split("; ").find(value => value.startsWith("accessToken="))?.slice("accessToken=".length);
+    if (!token) return null;
+    try { return jwt.verify(token, JWT_SECRET); }
+    catch { return null; }
+}
+
+function isAdminSession(req) {
+    return sessionPayload(req)?.role === "admin";
+}
+
+const BOT_LEASE_LOCK = 914230118;
+const BOT_LEASE_TTL_MS = envNumber("BOT_INSTANCE_LEASE_TTL_SECONDS", 90, 30, 600) * 1000;
+let botLease = null;
+
+async function releaseBotLease() {
+    if (!botLease) return;
+    const lease = botLease;
+    botLease = null;
+    try { await lease.client.query("SELECT pg_advisory_unlock($1)", [BOT_LEASE_LOCK]); }
+    finally { lease.client.release(); }
+}
+
+async function updateBotLease(instanceId, action) {
+    if (!/^[A-Za-z0-9_-]{8,80}$/.test(instanceId)) throw new Error("INVALID_INSTANCE_ID");
+    if (action === "release") {
+        if (botLease?.instanceId === instanceId) await releaseBotLease();
+        return {acquired: true, released: true};
+    }
+    if (botLease && Date.now() - botLease.lastSeen > BOT_LEASE_TTL_MS) await releaseBotLease();
+    if (botLease) {
+        if (botLease.instanceId === instanceId) {
+            botLease.lastSeen = Date.now();
+            return {acquired: true};
+        }
+        return {acquired: false, reason: "another_instance_active"};
+    }
+    const client = await pool.connect();
+    try {
+        const result = await client.query("SELECT pg_try_advisory_lock($1) AS acquired", [BOT_LEASE_LOCK]);
+        if (!result.rows[0]?.acquired) {
+            client.release();
+            return {acquired: false, reason: "another_instance_active"};
+        }
+        botLease = {instanceId, client, lastSeen: Date.now()};
+        return {acquired: true};
+    } catch (error) {
+        client.release();
+        throw error;
+    }
 }
 
 function requestIdFor(req) {
@@ -88,9 +166,9 @@ function readJsonBody(req, maxBytes = 1_000_000) {
 }
 
 async function extractPdfText(filePath) {
-
+    const data = await fs.promises.readFile(filePath);
     const parser = new PDFParse({
-        data: fs.readFileSync(filePath)
+        data
     });
 
     const result = await parser.getText();
@@ -149,7 +227,7 @@ const {
 } = require("./chat");
 
 
-const MAX_SIZE = 100 * 1024 * 1024;
+const MAX_SIZE = envNumber("AI_DOCUMENT_MAX_BYTES", 20 * 1024 * 1024, 1024, 50 * 1024 * 1024);
 const server = route.createServer(async (req, res) => {
     const requestId = requestIdFor(req);
     const requestUrl = new URL(req.url, "http://127.0.0.1");
@@ -193,6 +271,20 @@ const server = route.createServer(async (req, res) => {
         return;
     }
 
+    if (req.method === "POST" && internalPath === "/internal/bot-instance/lease") {
+        try {
+            const data = await readJsonBody(req, 10_000);
+            const lease = await updateBotLease(String(data.instanceId || ""), data.action === "release" ? "release" : "acquire");
+            res.writeHead(lease.acquired ? 200 : 409);
+            res.end(JSON.stringify({success: lease.acquired, ...lease}));
+        } catch (error) {
+            logSafeError("bot_instance_lease", error, requestId, "lease");
+            res.writeHead(error.message === "INVALID_INSTANCE_ID" ? 400 : 500);
+            res.end(JSON.stringify({success: false}));
+        }
+        return;
+    }
+
     if (req.method === "GET" && internalPath === "/internal/bot-user") {
         try {
             const user = await getBotUser(requestUrl.searchParams.get("telegramId"));
@@ -228,6 +320,21 @@ const server = route.createServer(async (req, res) => {
         } catch (error) {
             console.error(`AI_USAGE_SAVE_ERROR type=${error.constructor.name}`);
             res.writeHead(error.message === "USER_NOT_REGISTERED" ? 403 : 500);
+            res.end(JSON.stringify({success: false}));
+        }
+        return;
+    }
+
+    if (req.method === "POST" && internalPath === "/internal/ai/claim") {
+        try {
+            const result = await claimAiRequest(await readJsonBody(req, 20_000), AI_LIMITS);
+            res.writeHead(result.claimed ? 200 : (result.reason === "duplicate" ? 409 : 429));
+            res.end(JSON.stringify({success: result.claimed, ...result}));
+        } catch (error) {
+            logSafeError("ai_request_claim", error, requestId, "claim");
+            const status = error.message === "USER_NOT_REGISTERED" ? 403
+                : error.message === "INVALID_REQUEST_ID" ? 400 : 500;
+            res.writeHead(status);
             res.end(JSON.stringify({success: false}));
         }
         return;
@@ -349,7 +456,7 @@ const server = route.createServer(async (req, res) => {
                     }));
                 }
 
-                const payload = jwt.verify(token, "secret_key");
+                const payload = jwt.verify(token, JWT_SECRET);
 
                 if (payload.role !== "admin") {
                     res.statusCode = 403;
@@ -416,7 +523,7 @@ const server = route.createServer(async (req, res) => {
                         userId: user.id,
                         role: user.role
                     },
-                    "secret_key",
+                    JWT_SECRET,
                     {
                         expiresIn: "7d"
                     }
@@ -461,7 +568,7 @@ const server = route.createServer(async (req, res) => {
                 }));
             }
 
-            const payload = jwt.verify(token, "secret_key");
+            const payload = jwt.verify(token, JWT_SECRET);
 
             if (payload.role !== "admin") {
                 res.statusCode = 403;
@@ -502,7 +609,7 @@ const server = route.createServer(async (req, res) => {
 
             const payload = jwt.verify(
                 token,
-                "secret_key"
+                JWT_SECRET
             );
 
             const user = await getUserById(
@@ -569,7 +676,7 @@ const server = route.createServer(async (req, res) => {
 
                 const payload = jwt.verify(
                     token,
-                    'secret_key'
+                    JWT_SECRET
                 );
 
                 const body = JSON.parse(parse);
@@ -958,15 +1065,23 @@ const server = route.createServer(async (req, res) => {
     }
 
     if (req.url === "/ai" && req.method === "POST") {
+        if (!isAdminSession(req)) {
+            res.writeHead(403, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({message: "Forbidden"}));
+            return;
+        }
         const busboy = Busboy({
             headers: req.headers,
             limits: {
-                fileSize: MAX_SIZE
+                fileSize: MAX_SIZE,
+                files: 1,
+                fields: 5,
+                parts: 6,
             }
         });
 
         busboy.on("file", (fieldname, file, info) => {
-            const { filename } = info;
+            const filename = path.basename(info.filename || "document.pdf");
 
             const saveTo = path.join(__dirname, "storage", filename);
 
@@ -1016,59 +1131,32 @@ const server = route.createServer(async (req, res) => {
     }
 
     if (req.url === "/search" && req.method === "POST") {
-
-        let body = "";
-
-        req.on("data", chunk => {
-            body += chunk;
-        });
-
-        req.on("end", async () => {
-            try {
-
-                const { question, limit = 3 } = JSON.parse(body);
-
-                if (!question) {
-                    res.writeHead(400, {
-                        "Content-Type": "application/json"
-                    });
-
-                    return res.end(JSON.stringify({
-                        message: "Question is required"
-                    }));
-                }
-
-                const safeLimit = Math.min(Math.max(Number(limit) || 3, 1), 5);
-                const chunks = await searchChunks(question, safeLimit);
-
-                const context = chunks
-                    .map(chunk => chunk.text)
-                    .join("\n\n");
-                res.writeHead(200, {
-                    "Content-Type": "application/json"
-                });
-
-                res.end(JSON.stringify({
-                    context,
-                    chunks
-                }));
-
-            } catch (err) {
-
-                const errorType = err && err.constructor ? err.constructor.name : "Error";
-                const errorCode = err && err.code ? String(err.code).slice(0, 40) : "unknown";
-                console.error(`SEARCH_ERROR type=${errorType} code=${errorCode}`);
-
-                res.writeHead(500, {
-                    "Content-Type": "application/json"
-                });
-
-                res.end(JSON.stringify({
-                    message: "Search error"
-                }));
+        if (!isInternalAuthorized(req)) {
+            res.writeHead(403, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({message: "Forbidden"}));
+            return;
+        }
+        try {
+            const {question, limit = 3} = await readJsonBody(req, 20_000);
+            if (typeof question !== "string" || !question.trim() || question.length > 4096) {
+                res.writeHead(400, {"Content-Type": "application/json"});
+                res.end(JSON.stringify({message: "Invalid question"}));
+                return;
             }
-        });
-
+            const safeLimit = Math.min(Math.max(Number(limit) || 3, 1), 5);
+            const chunks = await searchChunks(question.trim(), safeLimit);
+            const context = chunks.map(chunk => chunk.text).join("\n\n");
+            res.end(JSON.stringify({context, chunks}));
+        } catch (err) {
+            const errorType = err && err.constructor ? err.constructor.name : "Error";
+            const errorCode = err && err.code ? String(err.code).slice(0, 40) : "unknown";
+            console.error(`SEARCH_ERROR request_id=${requestId} type=${errorType} code=${errorCode}`);
+            const invalid = ["INVALID_JSON", "BODY_TOO_LARGE", "INVALID_EMBEDDING_INPUT"].includes(err.message);
+            res.writeHead(invalid ? 400 : (String(err.code || "").includes("LIMIT") ? 429 : 500), {
+                "Content-Type": "application/json"
+            });
+            res.end(JSON.stringify({message: invalid ? "Invalid request" : "Search unavailable"}));
+        }
         return;
     }
 
@@ -1291,6 +1379,13 @@ async function processDocument(filename, saveTo) {
 
     const chunks = splitText(text);
 
+    const maxChunks = envNumber("AI_DOCUMENT_MAX_CHUNKS", 500, 1, 5000);
+    if (chunks.length > maxChunks) {
+        const error = new Error("DOCUMENT_CHUNK_LIMIT");
+        error.code = "DOCUMENT_CHUNK_LIMIT";
+        throw error;
+    }
+
     console.log(`Получено ${chunks.length} чанков`);
 
     const documentId = await saveDocument(
@@ -1307,7 +1402,7 @@ async function processDocument(filename, saveTo) {
             chunk
         );
 
-        const embedding = await createEmbedding(chunk);
+        const embedding = await createEmbedding(chunk, {source: "document_index"});
 
         await updateEmbedding(
             chunkId,

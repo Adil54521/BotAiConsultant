@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 from enum import Enum
 
 
@@ -31,6 +32,12 @@ CONTROL_BUTTONS = frozenset({
     "Выход из режима общения с сотрудником",
 })
 CONTROL_COMMANDS = frozenset({"/start", "/menu", "/help", "/cancel", "/admin", "/admin_period", "/admin_user"})
+AI_REQUEST_NAMESPACE = uuid.UUID("7c6f6d43-5c48-4f75-8617-1e4543f31240")
+
+
+def telegram_request_id(user_id, message_id):
+    """Stable UUID used to deduplicate a Telegram message across restarts/instances."""
+    return str(uuid.uuid5(AI_REQUEST_NAMESPACE, f"telegram:{int(user_id)}:{int(message_id)}"))
 
 
 def normalize_command(text):

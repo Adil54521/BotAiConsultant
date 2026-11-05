@@ -19,7 +19,7 @@ from aiogram.types import (CallbackQuery, FSInputFile, InlineKeyboardButton,
                            ReplyKeyboardMarkup)
 from dotenv import load_dotenv
 
-from ai_service import Gemini
+from ai_service import Gemini, route_request
 from admin_periods import LOCAL_TZ, period_bounds
 from report_generator import build_usage_report
 from internal_auth import resolve_internal_token
@@ -35,6 +35,7 @@ from bot_state import (
     UserMode,
     is_admin_id,
     is_own_contact,
+    telegram_request_id,
 )
 
 
@@ -76,6 +77,14 @@ ai_service = Gemini()
 mode_coordinator = ModeCoordinator()
 backend_session = None
 backend_api_prefix = ""
+BOT_INSTANCE_ID = uuid.uuid4().hex
+try:
+    AI_LOCAL_CONCURRENCY = max(1, min(int(os.getenv("AI_MAX_CONCURRENT_REQUESTS", "3")), 16))
+except ValueError:
+    AI_LOCAL_CONCURRENCY = 3
+ai_semaphore = asyncio.Semaphore(AI_LOCAL_CONCURRENCY)
+ai_user_locks = {}
+sent_cost_alerts = set()
 
 
 def user_ref(user_id):
@@ -163,7 +172,7 @@ async def transition_mode(message, state, mode, event):
     return generation
 
 
-async def backend_post(path, payload):
+async def backend_post(path, payload, expected_error_statuses=()):
     if backend_session is None:
         return False, ""
     try:
@@ -177,15 +186,16 @@ async def backend_post(path, payload):
         ) as response:
             text = await response.text()
             if response.status >= 400:
-                error_hint = " ".join(text[:160].splitlines())
-                logger.error(
-                    "BACKEND_ERROR | request_id=%s | path=%s | status=%d | body_hint=%r",
-                    request_id,
-                    path,
-                    response.status,
-                    error_hint,
-                )
-                return False, ""
+                if response.status not in expected_error_statuses:
+                    error_hint = " ".join(text[:160].splitlines())
+                    logger.error(
+                        "BACKEND_ERROR | request_id=%s | path=%s | status=%d | body_hint=%r",
+                        request_id,
+                        path,
+                        response.status,
+                        error_hint,
+                    )
+                return False, text
             return True, text
     except (aiohttp.ClientError, asyncio.TimeoutError) as error:
         logger.error(
@@ -223,6 +233,48 @@ async def backend_get(path):
 async def get_registration(user_id):
     ok, payload = await backend_get(f"/internal/bot-user?telegramId={user_id}")
     return bool(ok and payload and payload.get("registered")), (payload or {}).get("user")
+
+
+async def claim_ai_request(user_id, message_id, request_id, requested_at, route):
+    ok, text = await backend_post(
+        "/internal/ai/claim",
+        {
+            "telegramId": user_id,
+            "telegramMessageId": message_id,
+            "requestId": request_id,
+            "requestedAt": requested_at,
+            "model": ai_service.model.removeprefix("models/"),
+            "route": route,
+            "source": "telegram",
+        },
+        expected_error_statuses=(409, 429),
+    )
+    try:
+        data = json.loads(text) if text else {}
+    except ValueError:
+        data = {}
+    if ok:
+        return True, data
+    return False, {"reason": data.get("reason") or "backend_unavailable", **data}
+
+
+async def notify_admin_cost_guard(reason, data):
+    if ADMIN_TELEGRAM_ID is None or reason not in {"daily_cost_limit", "daily_request_limit"}:
+        return
+    alert_key = (datetime.now(LOCAL_TZ).date().isoformat(), reason)
+    if alert_key in sent_cost_alerts:
+        return
+    sent_cost_alerts.add(alert_key)
+    try:
+        current = data.get("dailyCostUsd")
+        limit = data.get("dailyCostLimitUsd")
+        await bot.send_message(
+            ADMIN_TELEGRAM_ID,
+            "⚠️ Защита расходов остановила новые запросы Gemini. "
+            f"Причина: {reason}. Оценка за сутки: ${float(current or 0):.4f}, лимит: ${float(limit or 0):.2f}.",
+        )
+    except Exception as error:
+        logger.error("AI_COST_ALERT_ERROR | type=%s", type(error).__name__)
 
 
 async def check_backend_contract():
@@ -417,7 +469,7 @@ async def admin_user_search(message: Message, state: FSMContext):
             f"Username: @{row.get('username') or 'не указан'}\n"
             f"Телефон: {row.get('phone')}\n"
             f"AI-запросы: {metric(row.get('ai_requests'))}, успешные: {metric(row.get('successful_requests'))}, ошибки: {metric(row.get('failed_requests'))}\n"
-            f"Токены: {metric(row.get('total_tokens'))}, среднее время: {metric(row.get('avg_duration_ms'))} мс\n"
+            f"Токены: {metric(row.get('total_tokens'))}, оценка: ${money(row.get('estimated_cost_usd'))}, среднее время: {metric(row.get('avg_duration_ms'))} мс\n"
             f"Обращения к сотрудникам: {metric(row.get('support_requests'))}"
         )
     await message.answer("\n".join(lines), reply_markup=admin_keyboard)
@@ -429,6 +481,15 @@ def metric(value):
     try:
         number = float(value)
         return f"{number:,.1f}" if not number.is_integer() else f"{int(number):,}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def money(value):
+    if value is None:
+        return "нет данных"
+    try:
+        return f"{float(value):,.6f}".rstrip("0").rstrip(".") or "0"
     except (TypeError, ValueError):
         return str(value)
 
@@ -476,6 +537,10 @@ async def admin_callback(callback: CallbackQuery, state: FSMContext):
                 f"Кэшированных токенов: {metric(data.get('cached_tokens'))}\n"
                 f"Всего токенов: {metric(data.get('total_tokens'))}\n"
                 f"Среднее токенов: {metric(data.get('avg_tokens'))}\n"
+                f"Оценочная стоимость, USD: {money(data.get('estimated_cost_usd'))}\n"
+                f"Средняя стоимость запроса, USD: {money(data.get('avg_estimated_cost_usd'))}\n"
+                f"Внутренних/фоновых запросов: {metric(data.get('non_user_requests'))}\n"
+                f"Источник неизвестен: {metric(data.get('unknown_source_requests'))}\n"
                 f"Общее время, мс: {metric(data.get('total_duration_ms'))}\n"
                 f"Среднее время, мс: {metric(data.get('avg_duration_ms'))}"
             )
@@ -488,7 +553,7 @@ async def admin_callback(callback: CallbackQuery, state: FSMContext):
             return
         lines = [f"👥 Пользователи\nПериод: {label}"]
         for row in rows:
-            lines.append(f"\n{row.get('telegram_id')} · @{row.get('username') or 'без username'}\nAI: {metric(row.get('ai_requests'))}, токены: {metric(row.get('total_tokens'))}, поддержка: {metric(row.get('support_requests'))}")
+            lines.append(f"\n{row.get('telegram_id')} · @{row.get('username') or 'без username'}\nAI: {metric(row.get('ai_requests'))}, токены: {metric(row.get('total_tokens'))}, оценка: ${money(row.get('estimated_cost_usd'))}, поддержка: {metric(row.get('support_requests'))}")
         if not rows:
             lines.append("\nНет зарегистрированных пользователей.")
         else:
@@ -611,44 +676,80 @@ async def process_ai(message: Message, state: FSMContext):
     if current_mode is not UserMode.AI_CHAT:
         logger.info("AI_REQUEST_SKIPPED | user_ref=%s | reason=mode_mismatch", user_ref(user_id))
         return
-    data = await state.get_data()
-    history = data.get("ai_history", [])
-    logger.info("AI_REQUEST_STARTED | user_ref=%s | generation=%d", user_ref(user_id), generation)
-    response, usage_record = await asyncio.to_thread(
-        ai_service.ask_ai_detailed,
-        message.text,
-        {"source": "telegram"},
-        history,
-    )
-    if not await mode_coordinator.is_current(user_id, UserMode.AI_CHAT, generation):
-        usage_record["status"] = "ignored"
+    user_lock = ai_user_locks.setdefault(user_id, asyncio.Lock())
+    async with user_lock:
+        if not await mode_coordinator.is_current(user_id, UserMode.AI_CHAT, generation):
+            logger.info("AI_REQUEST_SKIPPED | user_ref=%s | reason=stale_before_claim", user_ref(user_id))
+            return
+        request_id = telegram_request_id(user_id, message.message_id)
+        requested_at = datetime.now(timezone.utc).isoformat()
+        route = route_request(message.text, (await state.get_data()).get("ai_history", []))
+        claimed, claim = await claim_ai_request(
+            user_id, message.message_id, request_id, requested_at, route
+        )
+        if not claimed:
+            reason = claim.get("reason", "unknown")
+            logger.warning(
+                "AI_REQUEST_BLOCKED | user_ref=%s | message_id=%s | request_id=%s | reason=%s",
+                user_ref(user_id), message.message_id, request_id, reason,
+            )
+            await notify_admin_cost_guard(reason, claim)
+            if reason == "duplicate":
+                return
+            if reason in {"user_rate_limit", "global_rate_limit", "concurrency_limit"}:
+                await message.answer("Слишком много запросов одновременно. Подождите немного и повторите вопрос.", reply_markup=ai_keyboard)
+            elif reason in {"daily_cost_limit", "daily_request_limit"}:
+                await message.answer("Суточный лимит ИИ временно исчерпан. Вы можете связаться с сотрудником.", reply_markup=ai_keyboard)
+            else:
+                await message.answer("ИИ временно недоступен. Попробуйте позже или свяжитесь с сотрудником.", reply_markup=ai_keyboard)
+            return
+
+        data = await state.get_data()
+        history = data.get("ai_history", [])
+        logger.info(
+            "AI_REQUEST_STARTED | user_ref=%s | message_id=%s | request_id=%s | generation=%d | route=%s | source=telegram",
+            user_ref(user_id), message.message_id, request_id, generation, route,
+        )
+        async with ai_semaphore:
+            response, usage_record = await asyncio.to_thread(
+                ai_service.ask_ai_detailed,
+                message.text,
+                {
+                    "source": "telegram",
+                    "user_ref": user_ref(user_id),
+                    "message_id": message.message_id,
+                    "request_id": request_id,
+                    "requested_at": requested_at,
+                },
+                history,
+            )
         usage_record["telegramId"] = user_id
+        if not await mode_coordinator.is_current(user_id, UserMode.AI_CHAT, generation):
+            usage_record["status"] = "ignored"
+            await backend_post("/internal/ai/usage", usage_record)
+            logger.info("AI_RESPONSE_IGNORED | user_ref=%s | request_id=%s | generation=%d", user_ref(user_id), request_id, generation)
+            return
+
         await backend_post("/internal/ai/usage", usage_record)
-        logger.info("AI_RESPONSE_IGNORED | user_ref=%s | generation=%d", user_ref(user_id), generation)
-        return
-
-    usage_record["telegramId"] = user_id
-    await backend_post("/internal/ai/usage", usage_record)
-
-    history.extend([
-        {"role": "user", "text": message.text},
-        {"role": "model", "text": response},
-    ])
-    await state.update_data(ai_history=history[-12:])
-    await backend_post(
-        "/ai/message",
-        {
-            "telegramId": user_id,
-            "username": message.from_user.username,
-            "fullName": message.from_user.full_name,
-            "phone": data.get("phone"),
-            "userMessage": message.text,
-            "assistantMessage": response,
-        },
-    )
-    if await mode_coordinator.is_current(user_id, UserMode.AI_CHAT, generation):
-        await message.answer(response, reply_markup=ai_keyboard)
-        logger.info("AI_RESPONSE_SENT | user_ref=%s | generation=%d", user_ref(user_id), generation)
+        history.extend([
+            {"role": "user", "text": message.text},
+            {"role": "model", "text": response},
+        ])
+        await state.update_data(ai_history=history[-12:])
+        await backend_post(
+            "/ai/message",
+            {
+                "telegramId": user_id,
+                "username": message.from_user.username,
+                "fullName": message.from_user.full_name,
+                "phone": data.get("phone"),
+                "userMessage": message.text,
+                "assistantMessage": response,
+            },
+        )
+        if await mode_coordinator.is_current(user_id, UserMode.AI_CHAT, generation):
+            await message.answer(response, reply_markup=ai_keyboard)
+            logger.info("AI_RESPONSE_SENT | user_ref=%s | request_id=%s | generation=%d", user_ref(user_id), request_id, generation)
 
 
 @dp.message(StateFilter(ModeState.waiting_operator, ModeState.human_support), F.text, ~F.text.in_(CONTROL_BUTTONS))
@@ -715,16 +816,49 @@ async def websocket_listener():
             await asyncio.sleep(5)
 
 
+async def bot_lease(action="acquire"):
+    ok, text = await backend_post(
+        "/internal/bot-instance/lease",
+        {"instanceId": BOT_INSTANCE_ID, "action": action},
+        expected_error_statuses=(409,),
+    )
+    try:
+        payload = json.loads(text) if text else {}
+    except ValueError:
+        payload = {}
+    return bool(ok and payload.get("acquired"))
+
+
+async def bot_lease_heartbeat():
+    while True:
+        await asyncio.sleep(30)
+        if not await bot_lease():
+            logger.critical("BOT_INSTANCE_LEASE_LOST | stopping_polling=true")
+            await dp.stop_polling()
+            return
+
+
 async def main():
     global backend_session
     backend_session = aiohttp.ClientSession()
-    await check_backend_contract()
+    if not await check_backend_contract():
+        await backend_session.close()
+        await bot.session.close()
+        return
+    if not await bot_lease():
+        logger.critical("BOT_INSTANCE_REJECTED | reason=another_instance_active")
+        await backend_session.close()
+        await bot.session.close()
+        return
     websocket_task = asyncio.create_task(websocket_listener())
+    lease_task = asyncio.create_task(bot_lease_heartbeat())
     try:
         await dp.start_polling(bot)
     finally:
         websocket_task.cancel()
-        await asyncio.gather(websocket_task, return_exceptions=True)
+        lease_task.cancel()
+        await asyncio.gather(websocket_task, lease_task, return_exceptions=True)
+        await bot_lease("release")
         await backend_session.close()
         await bot.session.close()
 
